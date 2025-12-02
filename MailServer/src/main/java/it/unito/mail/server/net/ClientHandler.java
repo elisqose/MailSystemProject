@@ -93,8 +93,15 @@ public class ClientHandler implements Runnable {
                     break;
 
                 case "DELETE_EMAIL":
-                    // Implementa la logica di cancellazione usando model.deleteEmail(...)
-                    // Ti lascio questo come esercizio o posso scriverlo se serve
+                    Email emailToDelete = request.getEmail(); // O passa solo l'ID se preferisci modificare Packet
+                    if (emailToDelete != null && model.userExists(user)) {
+                        model.deleteEmail(user, emailToDelete.getId());
+                        response.setOutcomeCode("OK");
+                        controller.appendLog("Email " + emailToDelete.getId() + " cancellata da " + user);
+                    } else {
+                        response.setOutcomeCode("ERROR");
+                        response.setOutcomeMessage("Errore cancellazione.");
+                    }
                     break;
 
                 default:

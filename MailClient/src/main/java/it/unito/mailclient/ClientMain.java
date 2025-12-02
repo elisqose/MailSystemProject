@@ -11,7 +11,7 @@ public class ClientMain extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("client-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("../../../../resources/client-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
 
         stage.setTitle("Mail Client - Login");

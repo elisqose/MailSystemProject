@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="it.unito.mail.server.controller.ServerController"
+      spacing="10" alignment="CENTER" prefWidth="600" prefHeight="400">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <Label text="Server Log" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+
+    <ListView fx:id="logList" VBox.vgrow="ALWAYS"/>
+
+</VBox>
