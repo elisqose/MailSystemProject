@@ -26,6 +26,8 @@ public class Packet implements Serializable {
     private String outcomeCode;
     private String outcomeMessage;
 
+    private java.util.Date lastUpdateDate;
+
     // Costruttore vuoto per Gson
     public Packet() {}
 
@@ -54,4 +56,7 @@ public class Packet implements Serializable {
 
     public String getOutcomeMessage() { return outcomeMessage; }
     public void setOutcomeMessage(String outcomeMessage) { this.outcomeMessage = outcomeMessage; }
+
+    public java.util.Date getLastUpdateDate() { return lastUpdateDate; }
+    public void setLastUpdateDate(java.util.Date lastUpdateDate) { this.lastUpdateDate = lastUpdateDate; }
 }

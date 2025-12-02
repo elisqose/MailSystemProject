@@ -80,12 +80,21 @@ public class ClientHandler implements Runnable {
                     }
                     break;
 
-                case "GET_UPDATES": // O "LOGIN"
+                case "GET_UPDATES":
                     if (model.userExists(user)) {
-                        List<Email> inbox = model.getInbox(user);
-                        response.setEmailList(inbox);
+                        // LEGGI la data dal pacchetto
+                        java.util.Date clientLastDate = request.getLastUpdateDate();
+
+                        // CHIEDI solo le nuove mail
+                        List<Email> updates = model.getInbox(user, clientLastDate);
+
+                        response.setEmailList(updates);
                         response.setOutcomeCode("OK");
-                        controller.appendLog("Aggiornamento inviato a " + user);
+
+                        // Logghiamo solo se ci sono stati aggiornamenti per non intasare la console
+                        if (!updates.isEmpty()) {
+                            controller.appendLog("Inviati " + updates.size() + " nuovi messaggi a " + user);
+                        }
                     } else {
                         response.setOutcomeCode("ERROR");
                         response.setOutcomeMessage("Utente sconosciuto.");

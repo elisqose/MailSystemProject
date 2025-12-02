@@ -83,6 +83,26 @@ public class MailboxManager {
         }
     }
 
+    // Richiesta dal ClientHandler per gli aggiornamenti
+    public synchronized List<Email> getInbox(String user, java.util.Date since) {
+        // Chiama la versione vecchia per avere tutte le mail
+        List<Email> allEmails = getInbox(user);
+
+        // Se la data è null, restituisce tutto (es. primo login)
+        if (since == null) {
+            return allEmails;
+        }
+
+        // Altrimenti filtra: tiene solo quelle DOPO la data "since"
+        List<Email> newEmails = new ArrayList<>();
+        for (Email e : allEmails) {
+            if (e.getTimestamp().after(since)) {
+                newEmails.add(e);
+            }
+        }
+        return newEmails;
+    }
+
     // Cancella una email specifica
     public synchronized void deleteEmail(String user, String emailId) throws IOException {
         Path path = Paths.get(DATA_DIR, user + ".json");
