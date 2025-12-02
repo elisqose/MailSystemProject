@@ -3,8 +3,8 @@ module Common {
     requires com.google.gson;
 
     // Rende visibile la classe Email agli altri moduli
-    exports it.unito.mail.common;
+    exports it.unito.common;
 
     // Permette a Gson di leggere/scrivere la classe Email
-    opens it.unito.mail.common to com.google.gson;
+    opens it.unito.common to com.google.gson;
 }

@@ -5,5 +5,5 @@ module MailClient {
     requires com.google.gson;
 
     opens it.unito.mail.client to javafx.fxml;
-    exports it.unito.mail.client;
+    exports it.unito.mailclient;
 }
