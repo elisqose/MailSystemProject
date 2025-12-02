@@ -106,6 +106,13 @@ public class ClientModel {
         }
     }
 
+    public void logout() {
+        this.userEmailAddress = null;
+        this.lastUpdate = null;
+        this.inbox.clear(); // Svuota la lista visuale
+        setStatus("Disconnesso.");
+    }
+
     /**
      * Chiede al server le email aggiornate.
      * Da chiamare periodicamente (es. ogni 5 secondi).
@@ -138,19 +145,32 @@ public class ClientModel {
     /**
      * Invia una nuova email.
      */
+    /**
+     * Invia una nuova email.
+     */
     public void sendEmail(String recipientsStr, String subject, String text) {
         if (userEmailAddress == null) return;
 
-        // Parsing dei destinatari (separati da virgola o punto e virgola)
+        // Parsing dei destinatari (separati da virgola, punto e virgola o spazi)
+        // Lo split potrebbe creare stringhe vuote se ci sono più spazi consecutivi
         String[] recipientArray = recipientsStr.split("[,;\\s]+");
+
+        // Usiamo una lista per i destinatari validi
         List<String> validRecipients = new ArrayList<>();
 
         for (String r : recipientArray) {
+            // Saltiamo stringhe vuote (es. doppi spazi)
+            if (r.trim().isEmpty()) continue;
+
             if (isValidEmail(r)) {
-                validRecipients.add(r);
+                // FIX: Evita di aggiungere lo stesso destinatario due volte
+                // Questo previene l'invio di email doppie se l'utente sbaglia a scrivere
+                if (!validRecipients.contains(r)) {
+                    validRecipients.add(r);
+                }
             } else {
                 setStatus("Indirizzo destinatario non valido: " + r);
-                return; // Interrompi invio se c'è un errore
+                return; // Interrompiamo subito l'invio se troviamo un errore
             }
         }
 
@@ -159,18 +179,25 @@ public class ClientModel {
             return;
         }
 
+        // Creazione oggetto Email
         Email email = new Email(userEmailAddress, validRecipients, subject, text);
+
+        // Creazione Pacchetto richiesta
         Packet request = new Packet("SEND_EMAIL", userEmailAddress);
         request.setEmail(email);
 
+        // Invio al server
         Packet response = sendRequest(request);
 
+        // Gestione risposta
         if (response != null && "OK".equals(response.getOutcomeCode())) {
             setStatus("Email inviata con successo!");
             // Nota: Non aggiungiamo la mail inviata alla inbox locale
-            // perché gestiamo solo la posta in arrivo come da specifiche.
+            // perché il client visualizza solo la posta in arrivo.
         } else {
-            String error = (response != null) ? response.getOutcomeMessage() : "Errore sconosciuto";
+            String error = (response != null && response.getOutcomeMessage() != null)
+                    ? response.getOutcomeMessage()
+                    : "Errore sconosciuto";
             setStatus("Errore invio: " + error);
         }
     }
@@ -212,16 +239,28 @@ public class ClientModel {
     private void addNewEmailsLocal(List<Email> newEmails) {
         if (newEmails == null || newEmails.isEmpty()) return;
 
-        // Aggiungiamo le nuove mail alla lista esistente
-        this.inbox.addAll(newEmails);
+        boolean listChanged = false;
 
-        // Ordina per data (più recenti in alto)
-        this.inbox.sort(Comparator.comparing(Email::getTimestamp).reversed());
+        for (Email email : newEmails) {
+            // FIX: Controlliamo se l'email esiste già nella lista locale tramite ID
+            boolean alreadyExists = this.inbox.stream()
+                    .anyMatch(existing -> existing.getId().equals(email.getId()));
 
-        // STEP 5: Aggiorna il puntatore all'ultima mail ricevuta
-        // Poiché abbiamo ordinato decrescente, la prima è la più nuova
-        if (!this.inbox.isEmpty()) {
-            this.lastUpdate = this.inbox.get(0).getTimestamp();
+            if (!alreadyExists) {
+                this.inbox.add(email);
+                listChanged = true;
+            }
+        }
+
+        // Riordina e aggiorna il puntatore temporale solo se abbiamo aggiunto qualcosa
+        if (listChanged) {
+            // Ordina per data (più recenti in alto)
+            this.inbox.sort(Comparator.comparing(Email::getTimestamp).reversed());
+
+            // Aggiorna il puntatore all'ultima mail ricevuta
+            if (!this.inbox.isEmpty()) {
+                this.lastUpdate = this.inbox.get(0).getTimestamp();
+            }
         }
     }
 

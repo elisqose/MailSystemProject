@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "b89f898d-cff7-4a96-a064-5715f44d360e",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user3@mail.com"
+    ],
+    "subject": "prova",
+    "text": "testing",
+    "timestamp": "Dec 2, 2025, 10:33:33 PM"
+  }
+]

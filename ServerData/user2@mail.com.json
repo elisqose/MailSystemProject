@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "id": "1e7fe938-0424-4c9f-b42f-1693e279e366",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com"
+    ],
+    "subject": "Test",
+    "text": "Ciaooo",
+    "timestamp": "Dec 2, 2025, 10:19:31 PM"
+  },
+  {
+    "id": "2e6ed3f9-05d2-4366-8d02-56fec60f730a",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com"
+    ],
+    "subject": "Test Multi Destinatari",
+    "text": "Prova ",
+    "timestamp": "Dec 2, 2025, 10:25:43 PM"
+  }
+]

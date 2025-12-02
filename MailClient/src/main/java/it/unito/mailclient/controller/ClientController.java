@@ -110,6 +110,26 @@ public class ClientController {
     }
 
     @FXML
+    protected void onReplyAllButtonClick() {
+        Email selected = emailTable.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            // Costruiamo la lista dei destinatari: Mittente + Altri destinatari (escluso me stesso)
+            StringBuilder recipients = new StringBuilder(selected.getSender());
+
+            for (String r : selected.getRecipients()) {
+                if (!r.equalsIgnoreCase(model.getUserEmailAddress()) && !r.equalsIgnoreCase(selected.getSender())) {
+                    recipients.append(", ").append(r);
+                }
+            }
+
+            String subject = "Re: " + selected.getSubject();
+            showComposeDialog(new Email(recipients.toString(), null, subject, ""), "Rispondi a Tutti");
+        } else {
+            showAlert("Attenzione", "Seleziona una mail a cui rispondere.");
+        }
+    }
+
+    @FXML
     protected void onForwardButtonClick() {
         Email selected = emailTable.getSelectionModel().getSelectedItem();
         if(selected != null) {
@@ -190,5 +210,23 @@ public class ClientController {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    protected void onLogoutButtonClick() {
+        // 1. Ferma il refresh automatico
+        if (autoRefreshService != null && !autoRefreshService.isShutdown()) {
+            autoRefreshService.shutdownNow();
+        }
+
+        // 2. Pulisce il modello
+        model.logout();
+
+        // 3. Cambia la vista (Mostra Login, Nascondi Inbox)
+        inboxPane.setVisible(false);
+        loginPane.setVisible(true);
+
+        // 4. Pulisce il campo email per estetica
+        emailField.clear();
     }
 }
