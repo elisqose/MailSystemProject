@@ -19,5 +19,27 @@
     "subject": "Test Multi Destinatari",
     "text": "Prova ",
     "timestamp": "Dec 2, 2025, 10:25:43 PM"
+  },
+  {
+    "id": "26a08094-46d1-4c5c-80ef-082fd1bbb9db",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova testing ",
+    "timestamp": "Dec 2, 2025, 10:35:04 PM"
+  },
+  {
+    "id": "e9b4f68b-fa5a-4b8c-b7da-149eef976f54",
+    "sender": "user3@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com"
+    ],
+    "subject": "Re: test",
+    "text": "ciao userssss",
+    "timestamp": "Dec 2, 2025, 10:35:41 PM"
   }
 ]

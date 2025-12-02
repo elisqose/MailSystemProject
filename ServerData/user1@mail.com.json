@@ -9,5 +9,16 @@
     "subject": "Test Multi Destinatari",
     "text": "Prova ",
     "timestamp": "Dec 2, 2025, 10:25:43 PM"
+  },
+  {
+    "id": "e9b4f68b-fa5a-4b8c-b7da-149eef976f54",
+    "sender": "user3@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com"
+    ],
+    "subject": "Re: test",
+    "text": "ciao userssss",
+    "timestamp": "Dec 2, 2025, 10:35:41 PM"
   }
 ]

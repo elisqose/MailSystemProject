@@ -1,12 +1,23 @@
 [
   {
-    "id": "b89f898d-cff7-4a96-a064-5715f44d360e",
-    "sender": "user2@mail.com",
+    "id": "26a08094-46d1-4c5c-80ef-082fd1bbb9db",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova testing ",
+    "timestamp": "Dec 2, 2025, 10:35:04 PM"
+  },
+  {
+    "id": "73290948-bb9b-4c30-b411-245f49a51a43",
+    "sender": "user1@mail.com",
     "recipients": [
       "user3@mail.com"
     ],
-    "subject": "prova",
-    "text": "testing",
-    "timestamp": "Dec 2, 2025, 10:33:33 PM"
+    "subject": "Fwd: Test Multi Destinatari",
+    "text": "prova inoltra\n\n--- Inoltrato ---\nProva ",
+    "timestamp": "Dec 2, 2025, 10:36:38 PM"
   }
 ]
