@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class Email implements Serializable {
-    // ID univoco per identificare il messaggio (utile per le cancellazioni)
     private String id;
     private String sender;
     private List<String> recipients;
@@ -14,19 +13,16 @@ public class Email implements Serializable {
     private String text;
     private Date timestamp;
 
-    // Costruttore vuoto necessario per la deserializzazione (es. Gson)
     public Email() {}
 
     public Email(String sender, List<String> recipients, String subject, String text) {
-        this.id = UUID.randomUUID().toString(); // Genera ID univoco automatico
+        this.id = UUID.randomUUID().toString();
         this.sender = sender;
         this.recipients = recipients;
         this.subject = subject;
         this.text = text;
-        this.timestamp = new Date(); // Imposta data/ora attuali
+        this.timestamp = new Date();
     }
-
-    // --- Getters e Setters ---
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

@@ -41,5 +41,15 @@
     "subject": "Re: test",
     "text": "ciao userssss",
     "timestamp": "Dec 2, 2025, 10:35:41 PM"
+  },
+  {
+    "id": "3fde2b92-cf77-4251-b342-3377f3ebafb5",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Dec 2, 2025, 10:40:39 PM"
   }
 ]
