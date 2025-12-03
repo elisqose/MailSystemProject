@@ -31,12 +31,7 @@ public class ClientHandler implements Runnable {
                 BufferedReader in = new BufferedReader(isr);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
         ) {
-            // 1. Leggi la richiesta JSON (assumiamo una riga per richiesta per semplicità)
-            // Nota: Se il JSON è formattato su più righe, Gson può leggere direttamente dallo stream,
-            // ma per i socket testuali è spesso più sicuro leggere l'intero oggetto o usare un delimitatore.
-            // Qui usiamo il parser di Gson direttamente sullo stream che è più robusto.
 
-            // Per semplicità di debug, leggiamo la stringa intera (attenzione ai buffer molto grandi)
             String jsonRequest = in.readLine();
             if (jsonRequest == null) return;
 
@@ -48,11 +43,10 @@ public class ClientHandler implements Runnable {
 
             controller.appendLog("Richiesta da " + socket.getInetAddress() + ": " + cmd);
 
-            // --- GESTIONE COMANDI ---
             switch (cmd) {
                 case "SEND_EMAIL":
                     Email email = request.getEmail();
-                    // Verifica mittente e destinatari
+
                     if (email != null && model.userExists(email.getSender())) {
                         boolean allRecipientsValid = true;
                         for (String recipient : email.getRecipients()) {
@@ -63,7 +57,6 @@ public class ClientHandler implements Runnable {
                         }
 
                         if (allRecipientsValid) {
-                            // Salva per ogni destinatario
                             for (String recipient : email.getRecipients()) {
                                 model.depositEmail(recipient, email);
                             }
@@ -82,16 +75,13 @@ public class ClientHandler implements Runnable {
 
                 case "GET_UPDATES":
                     if (model.userExists(user)) {
-                        // LEGGI la data dal pacchetto
                         java.util.Date clientLastDate = request.getLastUpdateDate();
 
-                        // CHIEDI solo le nuove mail
                         List<Email> updates = model.getInbox(user, clientLastDate);
 
                         response.setEmailList(updates);
                         response.setOutcomeCode("OK");
 
-                        // Logghiamo solo se ci sono stati aggiornamenti per non intasare la console
                         if (!updates.isEmpty()) {
                             controller.appendLog("Inviati " + updates.size() + " nuovi messaggi a " + user);
                         }
@@ -102,7 +92,7 @@ public class ClientHandler implements Runnable {
                     break;
 
                 case "DELETE_EMAIL":
-                    Email emailToDelete = request.getEmail(); // O passa solo l'ID se preferisci modificare Packet
+                    Email emailToDelete = request.getEmail();
                     if (emailToDelete != null && model.userExists(user)) {
                         model.deleteEmail(user, emailToDelete.getId());
                         response.setOutcomeCode("OK");
@@ -118,7 +108,6 @@ public class ClientHandler implements Runnable {
                     response.setOutcomeMessage("Comando sconosciuto");
             }
 
-            // 2. Invia la risposta
             String jsonResponse = gson.toJson(response);
             out.println(jsonResponse);
 
