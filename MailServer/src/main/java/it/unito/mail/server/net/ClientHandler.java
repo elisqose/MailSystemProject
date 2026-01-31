@@ -1,8 +1,8 @@
 package it.unito.mail.server.net;
 
 import com.google.gson.Gson;
-import it.unito.common.Email;
-import it.unito.common.Packet;
+import it.unito.mail.server.shared.Email;
+import it.unito.mail.server.shared.Packet;
 import it.unito.mail.server.controller.ServerController;
 import it.unito.mail.server.model.MailboxManager;
 

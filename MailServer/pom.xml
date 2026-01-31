@@ -13,11 +13,6 @@
     <artifactId>MailServer</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>it.unito</groupId>
-            <artifactId>Common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
 </project>

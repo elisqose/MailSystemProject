@@ -1,16 +1,5 @@
 [
   {
-    "id": "2e6ed3f9-05d2-4366-8d02-56fec60f730a",
-    "sender": "user2@mail.com",
-    "recipients": [
-      "user1@mail.com",
-      "user2@mail.com"
-    ],
-    "subject": "Test Multi Destinatari",
-    "text": "Prova ",
-    "timestamp": "Dec 2, 2025, 10:25:43 PM"
-  },
-  {
     "id": "e9b4f68b-fa5a-4b8c-b7da-149eef976f54",
     "sender": "user3@mail.com",
     "recipients": [
@@ -20,5 +9,15 @@
     "subject": "Re: test",
     "text": "ciao userssss",
     "timestamp": "Dec 2, 2025, 10:35:41 PM"
+  },
+  {
+    "id": "87802c64-747c-48dc-a8df-dff8ce090e2b",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user1@mail.com"
+    ],
+    "subject": "Test",
+    "text": "Prova",
+    "timestamp": "Jan 31, 2026, 3:40:07 PM"
   }
 ]
