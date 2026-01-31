@@ -8,6 +8,7 @@ import it.unito.mail.server.model.MailboxManager;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler implements Runnable {
@@ -48,24 +49,39 @@ public class ClientHandler implements Runnable {
                     Email email = request.getEmail();
 
                     if (email != null && model.userExists(email.getSender())) {
-                        boolean allRecipientsValid = true;
+                        List<String> invalidRecipients = new ArrayList<>();
+                        List<String> validRecipients = new ArrayList<>();
+
+                        // 1. Separiamo i destinatari validi da quelli inesistenti
                         for (String recipient : email.getRecipients()) {
-                            if (!model.userExists(recipient)) {
-                                allRecipientsValid = false;
-                                break;
+                            if (model.userExists(recipient)) {
+                                validRecipients.add(recipient);
+                            } else {
+                                invalidRecipients.add(recipient);
                             }
                         }
 
-                        if (allRecipientsValid) {
-                            for (String recipient : email.getRecipients()) {
-                                model.depositEmail(recipient, email);
-                            }
+                        // 2. Inviamo ai destinatari validi (se presenti)
+                        for (String recipient : validRecipients) {
+                            model.depositEmail(recipient, email);
+                        }
+
+                        // 3. Prepariamo la risposta per il client
+                        if (invalidRecipients.isEmpty()) {
                             response.setOutcomeCode("OK");
-                            controller.appendLog("Email inviata da " + email.getSender());
+                            controller.appendLog("Email inviata con successo da " + email.getSender());
                         } else {
-                            response.setOutcomeCode("ERROR");
-                            response.setOutcomeMessage("Uno o più destinatari non esistono.");
-                            controller.appendLog("Errore invio: destinatari non validi.");
+                            // Se ci sono errori, segnaliamo quali indirizzi hanno fallito
+                            response.setOutcomeCode("PARTIAL_ERROR"); // Nuovo codice opzionale o mantieni ERROR
+                            String errorMsg = "Email non consegnata a: " + String.join(", ", invalidRecipients);
+                            response.setOutcomeMessage(errorMsg);
+
+                            controller.appendLog("Invio parziale da " + email.getSender() + ". Errori: " + invalidRecipients);
+
+                            // Se non c'era nemmeno un destinatario valido, l'esito è un fallimento totale
+                            if (validRecipients.isEmpty()) {
+                                response.setOutcomeCode("ERROR");
+                            }
                         }
                     } else {
                         response.setOutcomeCode("ERROR");
@@ -100,6 +116,19 @@ public class ClientHandler implements Runnable {
                     } else {
                         response.setOutcomeCode("ERROR");
                         response.setOutcomeMessage("Errore cancellazione.");
+                    }
+                    break;
+
+                case "MARK_AS_READ":
+                    Email emailToMark = request.getEmail();
+                    if (emailToMark != null && model.userExists(user)) {
+                        // Aggiorna lo stato sul server per rendere la lettura persistente
+                        model.markAsRead(user, emailToMark.getId());
+                        response.setOutcomeCode("OK");
+                        controller.appendLog("Email " + emailToMark.getId() + " segnata come letta da " + user);
+                    } else {
+                        response.setOutcomeCode("ERROR");
+                        response.setOutcomeMessage("Errore durante l'aggiornamento dello stato lettura.");
                     }
                     break;
 

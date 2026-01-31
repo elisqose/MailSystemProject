@@ -13,7 +13,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -23,9 +24,8 @@ public class MailboxManager {
     private static final String DATA_DIR = "ServerData";
     private final Gson gson;
 
-    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
-    private final Lock rLock = rwLock.readLock();   // Lock per la lettura (condiviso)
-    private final Lock wLock = rwLock.writeLock();  // Lock per la scrittura (esclusivo)
+    // Mappa per gestire lock granulari per ogni utente (Scalabilità)
+    private final Map<String, ReadWriteLock> userLocks = new ConcurrentHashMap<>();
 
     private static MailboxManager instance;
 
@@ -39,6 +39,13 @@ public class MailboxManager {
             instance = new MailboxManager();
         }
         return instance;
+    }
+
+    /**
+     * Ritorna il lock specifico per l'utente, creandolo se non esiste.
+     */
+    private ReadWriteLock getUserLock(String email) {
+        return userLocks.computeIfAbsent(email.toLowerCase(), k -> new ReentrantReadWriteLock());
     }
 
     private void initializeStorage() {
@@ -57,31 +64,32 @@ public class MailboxManager {
     }
 
     public boolean userExists(String emailAddress) {
-        // Accesso a costante statica, thread-safe di natura
         for (String user : VALID_USERS) {
             if (user.equalsIgnoreCase(emailAddress)) return true;
         }
         return false;
     }
 
-    // SCRITTURA: Usa wLock (Esclusivo)
+    // SCRITTURA: Usa Lock di Scrittura specifico per utente
     public void depositEmail(String recipient, Email email) throws IOException {
-        wLock.lock();
+        ReadWriteLock lock = getUserLock(recipient);
+        lock.writeLock().lock();
         try {
             Path path = Paths.get(DATA_DIR, recipient + ".json");
             List<Email> inbox = loadListFromFile(path);
             inbox.add(email);
             saveListToFile(path, inbox);
         } finally {
-            wLock.unlock();
+            lock.writeLock().unlock();
         }
     }
 
-    // LETTURA: Usa rLock (Condiviso)
+    // LETTURA: Usa Lock di Lettura specifico per utente (Condiviso)
     public List<Email> getInbox(String user) {
         if (!userExists(user)) return Collections.emptyList();
 
-        rLock.lock();
+        ReadWriteLock lock = getUserLock(user);
+        lock.readLock().lock();
         try {
             Path path = Paths.get(DATA_DIR, user + ".json");
             return loadListFromFile(path);
@@ -89,13 +97,12 @@ public class MailboxManager {
             e.printStackTrace();
             return new ArrayList<>();
         } finally {
-            rLock.unlock();
+            lock.readLock().unlock();
         }
     }
 
-    // LETTURA: Usa rLock (tramite getInbox)
+    // LETTURA: Thread-safe tramite getInbox(user)
     public List<Email> getInbox(String user, java.util.Date since) {
-        // getInbox(user) acquisisce già il rLock, quindi è thread-safe.
         List<Email> allEmails = getInbox(user);
 
         if (since == null) {
@@ -111,26 +118,24 @@ public class MailboxManager {
         return newEmails;
     }
 
-    // SCRITTURA: Usa wLock (Esclusivo)
+    // SCRITTURA: Usa Lock di Scrittura specifico per utente
     public void deleteEmail(String user, String emailId) throws IOException {
-        wLock.lock();
+        ReadWriteLock lock = getUserLock(user);
+        lock.writeLock().lock();
         try {
             Path path = Paths.get(DATA_DIR, user + ".json");
             List<Email> inbox = loadListFromFile(path);
 
-            // Rimuove la mail se l'ID corrisponde
             boolean removed = inbox.removeIf(e -> e.getId().equals(emailId));
 
-            // Ottimizzazione: scriviamo su disco solo se c'è stata una modifica
             if (removed) {
                 saveListToFile(path, inbox);
             }
         } finally {
-            wLock.unlock();
+            lock.writeLock().unlock();
         }
     }
 
-    // Metodi privati chiamati all'interno dei blocchi lock (non necessitano di lock propri)
     private List<Email> loadListFromFile(Path path) throws IOException {
         if (!Files.exists(path)) return new ArrayList<>();
         try (Reader reader = Files.newBufferedReader(path)) {
@@ -143,6 +148,31 @@ public class MailboxManager {
     private void saveListToFile(Path path, List<Email> list) throws IOException {
         try (Writer writer = Files.newBufferedWriter(path)) {
             gson.toJson(list, writer);
+        }
+    }
+
+    // SCRITTURA: Usa Lock di Scrittura specifico per utente
+    public void markAsRead(String user, String emailId) throws IOException {
+        ReadWriteLock lock = getUserLock(user);
+        lock.writeLock().lock();
+        try {
+            Path path = Paths.get(DATA_DIR, user + ".json");
+            List<Email> inbox = loadListFromFile(path);
+
+            boolean updated = false;
+            for (Email e : inbox) {
+                if (e.getId().equals(emailId)) {
+                    e.setRead(true);
+                    updated = true;
+                    break;
+                }
+            }
+
+            if (updated) {
+                saveListToFile(path, inbox);
+            }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 }
