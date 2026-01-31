@@ -8,7 +8,8 @@
     ],
     "subject": "test",
     "text": "prova testing ",
-    "timestamp": "Dec 2, 2025, 10:35:04 PM"
+    "timestamp": "Dec 2, 2025, 10:35:04 PM",
+    "read": true
   },
   {
     "id": "73290948-bb9b-4c30-b411-245f49a51a43",
@@ -18,6 +19,20 @@
     ],
     "subject": "Fwd: Test Multi Destinatari",
     "text": "prova inoltra\n\n--- Inoltrato ---\nProva ",
-    "timestamp": "Dec 2, 2025, 10:36:38 PM"
+    "timestamp": "Dec 2, 2025, 10:36:38 PM",
+    "read": true
+  },
+  {
+    "id": "b59e0adf-3910-4b2d-a31c-28a15c87c1aa",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "prova",
+    "timestamp": "Jan 31, 2026, 6:06:36 PM",
+    "read": true
   }
 ]

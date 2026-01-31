@@ -8,7 +8,7 @@
     "subject": "Test",
     "text": "Ciaooo",
     "timestamp": "Dec 2, 2025, 10:19:31 PM",
-    "read": false
+    "read": true
   },
   {
     "id": "2e6ed3f9-05d2-4366-8d02-56fec60f730a",
@@ -20,7 +20,7 @@
     "subject": "Test Multi Destinatari",
     "text": "Prova ",
     "timestamp": "Dec 2, 2025, 10:25:43 PM",
-    "read": false
+    "read": true
   },
   {
     "id": "26a08094-46d1-4c5c-80ef-082fd1bbb9db",
@@ -32,7 +32,7 @@
     "subject": "test",
     "text": "prova testing ",
     "timestamp": "Dec 2, 2025, 10:35:04 PM",
-    "read": false
+    "read": true
   },
   {
     "id": "e9b4f68b-fa5a-4b8c-b7da-149eef976f54",
@@ -44,7 +44,7 @@
     "subject": "Re: test",
     "text": "ciao userssss",
     "timestamp": "Dec 2, 2025, 10:35:41 PM",
-    "read": false
+    "read": true
   },
   {
     "id": "3fde2b92-cf77-4251-b342-3377f3ebafb5",
@@ -55,7 +55,7 @@
     "subject": "",
     "text": "",
     "timestamp": "Dec 2, 2025, 10:40:39 PM",
-    "read": false
+    "read": true
   },
   {
     "id": "b0d05d23-a025-4766-a2dc-0f00ba3ff509",
@@ -66,17 +66,6 @@
     "subject": "test",
     "text": "prova",
     "timestamp": "Jan 31, 2026, 4:54:41 PM",
-    "read": false
-  },
-  {
-    "id": "e9cc7a63-7a11-42e8-82a3-b092f12c7505",
-    "sender": "user1@mail.com",
-    "recipients": [
-      "user2@mail.com"
-    ],
-    "subject": "",
-    "text": "prova prova\n",
-    "timestamp": "Jan 31, 2026, 5:09:12 PM",
-    "read": false
+    "read": true
   }
 ]

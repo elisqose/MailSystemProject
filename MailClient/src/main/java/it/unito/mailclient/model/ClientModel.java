@@ -115,6 +115,7 @@ public class ClientModel {
     public void sendEmail(String recipientsStr, String subject, String text) {
         if (userEmailAddress == null) return;
 
+        // 1. Validazione locale degli indirizzi (Regex)
         String[] recipientArray = recipientsStr.split("[,;\\s]+");
         List<String> validRecipients = new ArrayList<>();
 
@@ -134,17 +135,25 @@ public class ClientModel {
             return;
         }
 
+        // 2. Creazione dell'oggetto Email e del pacchetto di richiesta
         Email email = new Email(userEmailAddress, validRecipients, subject, text);
         Packet request = new Packet("SEND_EMAIL", userEmailAddress);
         request.setEmail(email);
 
+        // 3. Invio della richiesta al server
         Packet response = sendRequest(request);
 
+        // 4. Gestione della risposta e degli errori (Aggiornato)
         if (response != null && "OK".equals(response.getOutcomeCode())) {
+            // Caso di successo
             setStatus("Email inviata con successo!");
         } else if (response != null) {
-            // Qui gestiamo i messaggi d'errore del server (es: destinatari inesistenti)
+            // Caso in cui il server risponde con un errore (es. destinatario inesistente)
             setStatus("Avviso: " + response.getOutcomeMessage());
+        } else {
+            // Caso in cui il server è offline (response è null)
+            // Questo corregge il problema della "mail sparita" senza avviso
+            setStatus("ERRORE: Impossibile inviare la mail. Server non raggiungibile.");
         }
     }
 
