@@ -45,6 +45,21 @@ public class ClientController {
 
         emailTable.setItems(model.getInbox());
 
+        model.getInbox().addListener((javafx.collections.ListChangeListener.Change<? extends Email> c) -> {
+            while (c.next()) {
+                // Mostra notifica solo se sono stati aggiunti elementi e siamo loggati (inbox visibile)
+                if (c.wasAdded() && inboxPane.isVisible()) {
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Nuova Posta");
+                        alert.setHeaderText("Nuovi messaggi ricevuti!");
+                        alert.setContentText("Hai " + c.getAddedSize() + " nuovi messaggi.");
+                        alert.show();
+                    });
+                }
+            }
+        });
+
         colFrom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender()));
         colSubject.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSubject()));
         colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getTimestamp()));
@@ -57,23 +72,46 @@ public class ClientController {
     @FXML
     protected void onLoginButtonClick() {
         String email = emailField.getText().trim();
-        boolean success = model.login(email);
 
-        if (success) {
-            loginPane.setVisible(false);
-            inboxPane.setVisible(true);
-            currentUserLabel.setText("Utente: " + email);
+        // 1. Feedback immediato (Agiamo sulla property, NON sulla label direttamente)
+        model.statusMessageProperty().set("Connessione in corso...");
 
-            startAutoRefresh();
-        }
+        // 2. Thread separato per l'operazione di rete
+        new Thread(() -> {
+            // Nota: qui userà la validazione Email spostata nel ClientModel/Email
+            boolean success = model.login(email);
+
+            // 3. Torniamo al thread grafico (JavaFX Application Thread) per aggiornare la scena
+            Platform.runLater(() -> {
+                if (success) {
+                    loginPane.setVisible(false);
+                    inboxPane.setVisible(true);
+                    currentUserLabel.setText("Utente: " + email);
+                    startAutoRefresh();
+                }
+                // Se fallisce, il model ha già aggiornato lo statusMessageProperty con l'errore
+            });
+        }).start();
     }
 
     @FXML
     protected void onDeleteButtonClick() {
         Email selected = emailTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            model.deleteEmail(selected);
-            messageArea.clear();
+            // Feedback utente
+            model.statusMessageProperty().set("Cancellazione in corso...");
+
+            new Thread(() -> {
+                // Operazione di rete
+                model.deleteEmail(selected);
+
+                // Aggiornamento interfaccia
+                Platform.runLater(() -> {
+                    messageArea.clear();
+                    // Conferma finale (opzionale, se il model non lo fa già)
+                    model.statusMessageProperty().set("Email cancellata.");
+                });
+            }).start();
         } else {
             showAlert("Nessuna selezione", "Seleziona una mail da cancellare.");
         }
@@ -176,8 +214,23 @@ public class ClientController {
         dialog.getDialogPane().setContent(layout);
 
         Optional<ButtonType> result = dialog.showAndWait();
+
         if (result.isPresent() && result.get() == sendButtonType) {
-            model.sendEmail(toField.getText(), subjectField.getText(), bodyArea.getText());
+            // 1. Recupera i valori dai campi ORA (siamo ancora nel thread grafico)
+            // Se lo facessi dentro il thread, darebbe errore!
+            String to = toField.getText();
+            String subj = subjectField.getText();
+            String txt = bodyArea.getText();
+
+            // 2. Feedback
+            model.statusMessageProperty().set("Invio messaggio in corso...");
+
+            // 3. Thread separato per l'invio
+            new Thread(() -> {
+                model.sendEmail(to, subj, txt);
+                // Non serve Platform.runLater qui per lo status, perché il metodo
+                // sendEmail del model usa già internamente setStatus (che usa Platform.runLater).
+            }).start();
         }
     }
 

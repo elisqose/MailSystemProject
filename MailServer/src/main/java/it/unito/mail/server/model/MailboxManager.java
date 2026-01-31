@@ -13,12 +13,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MailboxManager {
 
     private static final String[] VALID_USERS = {"user1@mail.com", "user2@mail.com", "user3@mail.com"};
     private static final String DATA_DIR = "ServerData";
     private final Gson gson;
+
+    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private final Lock rLock = rwLock.readLock();   // Lock per la lettura (condiviso)
+    private final Lock wLock = rwLock.writeLock();  // Lock per la scrittura (esclusivo)
 
     private static MailboxManager instance;
 
@@ -50,31 +57,45 @@ public class MailboxManager {
     }
 
     public boolean userExists(String emailAddress) {
+        // Accesso a costante statica, thread-safe di natura
         for (String user : VALID_USERS) {
             if (user.equalsIgnoreCase(emailAddress)) return true;
         }
         return false;
     }
 
-    public synchronized void depositEmail(String recipient, Email email) throws IOException {
-        Path path = Paths.get(DATA_DIR, recipient + ".json");
-        List<Email> inbox = loadListFromFile(path);
-        inbox.add(email);
-        saveListToFile(path, inbox);
+    // SCRITTURA: Usa wLock (Esclusivo)
+    public void depositEmail(String recipient, Email email) throws IOException {
+        wLock.lock();
+        try {
+            Path path = Paths.get(DATA_DIR, recipient + ".json");
+            List<Email> inbox = loadListFromFile(path);
+            inbox.add(email);
+            saveListToFile(path, inbox);
+        } finally {
+            wLock.unlock();
+        }
     }
 
-    public synchronized List<Email> getInbox(String user) {
+    // LETTURA: Usa rLock (Condiviso)
+    public List<Email> getInbox(String user) {
         if (!userExists(user)) return Collections.emptyList();
+
+        rLock.lock();
         try {
             Path path = Paths.get(DATA_DIR, user + ".json");
             return loadListFromFile(path);
         } catch (IOException e) {
             e.printStackTrace();
             return new ArrayList<>();
+        } finally {
+            rLock.unlock();
         }
     }
 
-    public synchronized List<Email> getInbox(String user, java.util.Date since) {
+    // LETTURA: Usa rLock (tramite getInbox)
+    public List<Email> getInbox(String user, java.util.Date since) {
+        // getInbox(user) acquisisce già il rLock, quindi è thread-safe.
         List<Email> allEmails = getInbox(user);
 
         if (since == null) {
@@ -90,14 +111,26 @@ public class MailboxManager {
         return newEmails;
     }
 
-    public synchronized void deleteEmail(String user, String emailId) throws IOException {
-        Path path = Paths.get(DATA_DIR, user + ".json");
-        List<Email> inbox = loadListFromFile(path);
-        // Rimuove la mail se l'ID corrisponde
-        inbox.removeIf(e -> e.getId().equals(emailId));
-        saveListToFile(path, inbox);
+    // SCRITTURA: Usa wLock (Esclusivo)
+    public void deleteEmail(String user, String emailId) throws IOException {
+        wLock.lock();
+        try {
+            Path path = Paths.get(DATA_DIR, user + ".json");
+            List<Email> inbox = loadListFromFile(path);
+
+            // Rimuove la mail se l'ID corrisponde
+            boolean removed = inbox.removeIf(e -> e.getId().equals(emailId));
+
+            // Ottimizzazione: scriviamo su disco solo se c'è stata una modifica
+            if (removed) {
+                saveListToFile(path, inbox);
+            }
+        } finally {
+            wLock.unlock();
+        }
     }
 
+    // Metodi privati chiamati all'interno dei blocchi lock (non necessitano di lock propri)
     private List<Email> loadListFromFile(Path path) throws IOException {
         if (!Files.exists(path)) return new ArrayList<>();
         try (Reader reader = Files.newBufferedReader(path)) {

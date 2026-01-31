@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ServerApp" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="it.unito.mail.server.ServerApp" />
+    <module name="MailServer" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

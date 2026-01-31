@@ -225,8 +225,11 @@ public class ClientModel {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            // Log in console per il debug
             System.err.println("Errore comunicazione Server: " + e.getMessage());
+
+            // --- MODIFICA PUNTO 6: Notifica l'utente ---
+            setStatus("ERRORE: Server non raggiungibile.");
         }
         return null;
     }
