@@ -28,6 +28,8 @@ public class Email implements Serializable {
     private String text;
     private Date timestamp;
 
+    private boolean read = false; // Default false (non letto)
+
     // Costruttore vuoto necessario per la serializzazione (es. Gson)
     public Email() {}
 
@@ -39,6 +41,14 @@ public class Email implements Serializable {
         this.subject = subject;
         this.text = text;
         this.timestamp = new Date(); // Imposta data/ora attuali alla creazione
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
     // --- GETTERS E SETTERS ---

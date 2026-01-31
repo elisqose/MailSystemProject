@@ -1,6 +1,6 @@
 package it.unito.mailclient.controller;
 
-import it.unito.mailclient.shared.Email;
+import it.unito.mailclient.shared.Email; // Assicurati che il package sia corretto
 import it.unito.mailclient.model.ClientModel;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.scene.paint.Color;
 
 import java.util.Date;
 import java.util.Optional;
@@ -45,25 +47,48 @@ public class ClientController {
 
         emailTable.setItems(model.getInbox());
 
+        // 1. LISTENER NOTIFICHE (Senza Pop-up)
         model.getInbox().addListener((javafx.collections.ListChangeListener.Change<? extends Email> c) -> {
             while (c.next()) {
-                // Mostra notifica solo se sono stati aggiunti elementi e siamo loggati (inbox visibile)
                 if (c.wasAdded() && inboxPane.isVisible()) {
-                    Platform.runLater(() -> {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Nuova Posta");
-                        alert.setHeaderText("Nuovi messaggi ricevuti!");
-                        alert.setContentText("Hai " + c.getAddedSize() + " nuovi messaggi.");
-                        alert.show();
-                    });
+                    // Nessun Alert intrusivo.
+                    // Opzionale: puoi stampare in console o fare un suono di sistema
+                    System.out.println("Nuovi messaggi ricevuti: " + c.getAddedSize());
                 }
             }
         });
 
+        // 2. CONFIGURAZIONE COLONNE E PALLINO ROSSO
         colFrom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender()));
+
+        // Custom Cell Factory per disegnare il pallino rosso
+        colFrom.setCellFactory(column -> new TableCell<Email, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item); // Mostra il mittente
+
+                    Email email = getTableView().getItems().get(getIndex());
+
+                    // Se NON è letta, mostra pallina rossa
+                    if (!email.isRead()) {
+                        setGraphic(new Circle(4, Color.RED));
+                    } else {
+                        setGraphic(null);
+                    }
+                }
+            }
+        });
+
         colSubject.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSubject()));
         colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getTimestamp()));
 
+        // Gestione selezione messaggio
         emailTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showEmailDetails(newValue)
         );
@@ -73,15 +98,13 @@ public class ClientController {
     protected void onLoginButtonClick() {
         String email = emailField.getText().trim();
 
-        // 1. Feedback immediato (Agiamo sulla property, NON sulla label direttamente)
+        // Feedback immediato
         model.statusMessageProperty().set("Connessione in corso...");
 
-        // 2. Thread separato per l'operazione di rete
+        // Thread separato per evitare freeze della GUI
         new Thread(() -> {
-            // Nota: qui userà la validazione Email spostata nel ClientModel/Email
             boolean success = model.login(email);
 
-            // 3. Torniamo al thread grafico (JavaFX Application Thread) per aggiornare la scena
             Platform.runLater(() -> {
                 if (success) {
                     loginPane.setVisible(false);
@@ -89,7 +112,6 @@ public class ClientController {
                     currentUserLabel.setText("Utente: " + email);
                     startAutoRefresh();
                 }
-                // Se fallisce, il model ha già aggiornato lo statusMessageProperty con l'errore
             });
         }).start();
     }
@@ -98,17 +120,12 @@ public class ClientController {
     protected void onDeleteButtonClick() {
         Email selected = emailTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Feedback utente
             model.statusMessageProperty().set("Cancellazione in corso...");
 
             new Thread(() -> {
-                // Operazione di rete
                 model.deleteEmail(selected);
-
-                // Aggiornamento interfaccia
                 Platform.runLater(() -> {
                     messageArea.clear();
-                    // Conferma finale (opzionale, se il model non lo fa già)
                     model.statusMessageProperty().set("Email cancellata.");
                 });
             }).start();
@@ -140,6 +157,7 @@ public class ClientController {
         if (selected != null) {
             StringBuilder recipients = new StringBuilder(selected.getSender());
 
+            // Aggiungi tutti i destinatari tranne me stesso e il mittente originale (che è già gestito)
             for (String r : selected.getRecipients()) {
                 if (!r.equalsIgnoreCase(model.getUserEmailAddress()) && !r.equalsIgnoreCase(selected.getSender())) {
                     recipients.append(", ").append(r);
@@ -163,11 +181,16 @@ public class ClientController {
         }
     }
 
-
-
     private void showEmailDetails(Email email) {
         if (email != null) {
             messageArea.setText(email.getText());
+
+            // 3. SEGNA COME LETTO
+            if (!email.isRead()) {
+                email.setRead(true);
+                // Aggiorna la tabella per rimuovere il pallino rosso
+                emailTable.refresh();
+            }
         } else {
             messageArea.clear();
         }
@@ -177,7 +200,7 @@ public class ClientController {
         autoRefreshService = Executors.newScheduledThreadPool(1);
         autoRefreshService.scheduleAtFixedRate(() -> {
             model.refreshInbox();
-        }, 0, 5, TimeUnit.SECONDS); // Ogni 5 secondi
+        }, 0, 5, TimeUnit.SECONDS);
     }
 
     public void shutdown() {
@@ -205,7 +228,7 @@ public class ClientController {
         bodyArea.setPromptText("Messaggio...");
 
         if (draft != null) {
-            if (draft.getSender() != null && !draft.getSender().isEmpty()) toField.setText(draft.getSender()); // Per reply
+            if (draft.getSender() != null && !draft.getSender().isEmpty()) toField.setText(draft.getSender());
             if (draft.getSubject() != null) subjectField.setText(draft.getSubject());
             if (draft.getText() != null) bodyArea.setText(draft.getText());
         }
@@ -216,20 +239,15 @@ public class ClientController {
         Optional<ButtonType> result = dialog.showAndWait();
 
         if (result.isPresent() && result.get() == sendButtonType) {
-            // 1. Recupera i valori dai campi ORA (siamo ancora nel thread grafico)
-            // Se lo facessi dentro il thread, darebbe errore!
             String to = toField.getText();
             String subj = subjectField.getText();
             String txt = bodyArea.getText();
 
-            // 2. Feedback
             model.statusMessageProperty().set("Invio messaggio in corso...");
 
-            // 3. Thread separato per l'invio
             new Thread(() -> {
                 model.sendEmail(to, subj, txt);
-                // Non serve Platform.runLater qui per lo status, perché il metodo
-                // sendEmail del model usa già internamente setStatus (che usa Platform.runLater).
+                // Status aggiornato automaticamente dal model
             }).start();
         }
     }
