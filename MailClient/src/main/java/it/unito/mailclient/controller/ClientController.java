@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+
 public class ClientController {
 
     @FXML private VBox loginPane;
@@ -51,6 +52,7 @@ public class ClientController {
             while (c.next()) {
                 if (c.wasAdded() && inboxPane.isVisible()) {
                     // Notifica non intrusiva via console o logica custom
+                    java.awt.Toolkit.getDefaultToolkit().beep();
                     System.out.println("Nuovi messaggi ricevuti: " + c.getAddedSize());
                 }
             }

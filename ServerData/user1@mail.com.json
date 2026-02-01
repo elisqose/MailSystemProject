@@ -1,17 +1,5 @@
 [
   {
-    "id": "e9b4f68b-fa5a-4b8c-b7da-149eef976f54",
-    "sender": "user3@mail.com",
-    "recipients": [
-      "user1@mail.com",
-      "user2@mail.com"
-    ],
-    "subject": "Re: test",
-    "text": "ciao userssss",
-    "timestamp": "Dec 2, 2025, 10:35:41 PM",
-    "read": true
-  },
-  {
     "id": "87802c64-747c-48dc-a8df-dff8ce090e2b",
     "sender": "user2@mail.com",
     "recipients": [
@@ -34,5 +22,30 @@
     "text": "prova",
     "timestamp": "Jan 31, 2026, 6:06:36 PM",
     "read": true
+  },
+  {
+    "id": "1f6e6118-07e8-4b6d-889d-df02145af5a0",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user1@mail.com"
+    ],
+    "subject": "",
+    "text": "prova beep",
+    "timestamp": "Feb 1, 2026, 4:38:26 PM",
+    "read": true
+  },
+  {
+    "id": "c233480a-e381-4b30-9c03-78debff3d5c7",
+    "sender": "user3@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com",
+      "user5@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "mail multipla",
+    "text": "test destinatario invalido ",
+    "timestamp": "Feb 1, 2026, 4:57:43 PM",
+    "read": false
   }
 ]

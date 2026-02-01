@@ -34,5 +34,19 @@
     "text": "prova",
     "timestamp": "Jan 31, 2026, 6:06:36 PM",
     "read": true
+  },
+  {
+    "id": "c233480a-e381-4b30-9c03-78debff3d5c7",
+    "sender": "user3@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com",
+      "user5@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "mail multipla",
+    "text": "test destinatario invalido ",
+    "timestamp": "Feb 1, 2026, 4:57:43 PM",
+    "read": false
   }
 ]

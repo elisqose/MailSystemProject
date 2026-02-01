@@ -36,23 +36,28 @@ public class ClientHandler implements Runnable {
             String jsonRequest = in.readLine();
             if (jsonRequest == null) return;
 
+            // Deserializzazione della richiesta
             Packet request = gson.fromJson(jsonRequest, Packet.class);
             Packet response = new Packet();
 
             String cmd = request.getCommand();
             String user = request.getUserEmailAddress();
 
-            controller.appendLog("Richiesta da " + socket.getInetAddress() + ": " + cmd);
+            // Log dell'azione richiesta
+            if (cmd != null) {
+                controller.appendLog("Richiesta da " + socket.getInetAddress() + ": " + cmd);
+            }
 
             switch (cmd) {
                 case "SEND_EMAIL":
                     Email email = request.getEmail();
 
+                    // Verifica validità mittente
                     if (email != null && model.userExists(email.getSender())) {
                         List<String> invalidRecipients = new ArrayList<>();
                         List<String> validRecipients = new ArrayList<>();
 
-                        // 1. Separiamo i destinatari validi da quelli inesistenti
+                        // 1. Separazione dei destinatari validi da quelli inesistenti
                         for (String recipient : email.getRecipients()) {
                             if (model.userExists(recipient)) {
                                 validRecipients.add(recipient);
@@ -61,38 +66,54 @@ public class ClientHandler implements Runnable {
                             }
                         }
 
-                        // 2. Inviamo ai destinatari validi (se presenti)
+                        // 2. Deposito effettivo della mail nelle caselle dei destinatari validi
                         for (String recipient : validRecipients) {
-                            model.depositEmail(recipient, email);
+                            try {
+                                model.depositEmail(recipient, email);
+                            } catch (IOException e) {
+                                controller.appendLog("Errore scrittura su file per: " + recipient);
+                                // Se la scrittura fallisce per un utente valido, lo spostiamo tra i falliti (opzionale ma consigliato)
+                                invalidRecipients.add(recipient + " (Errore IO)");
+                            }
                         }
 
-                        // 3. Prepariamo la risposta per il client
+                        // 3. Costruzione della risposta per il client
                         if (invalidRecipients.isEmpty()) {
+                            // CASO 1: Tutto OK
                             response.setOutcomeCode("OK");
+                            response.setOutcomeMessage("Email inviata con successo.");
                             controller.appendLog("Email inviata con successo da " + email.getSender());
                         } else {
-                            // Se ci sono errori, segnaliamo quali indirizzi hanno fallito
-                            response.setOutcomeCode("PARTIAL_ERROR"); // Nuovo codice opzionale o mantieni ERROR
-                            String errorMsg = "Email non consegnata a: " + String.join(", ", invalidRecipients);
-                            response.setOutcomeMessage(errorMsg);
-
-                            controller.appendLog("Invio parziale da " + email.getSender() + ". Errori: " + invalidRecipients);
-
-                            // Se non c'era nemmeno un destinatario valido, l'esito è un fallimento totale
+                            // Ci sono destinatari invalidi
                             if (validRecipients.isEmpty()) {
+                                // CASO 2: Fallimento Totale (Nessun destinatario valido)
                                 response.setOutcomeCode("ERROR");
+                                response.setOutcomeMessage("Invio fallito. Nessun destinatario valido trovato.");
+                                controller.appendLog("Invio fallito da " + email.getSender() + ": nessun destinatario valido.");
+                            } else {
+                                // CASO 3: Successo Parziale (Alcuni OK, alcuni NO)
+                                response.setOutcomeCode("PARTIAL_ERROR");
+
+                                // Messaggio chiaro per l'utente
+                                String msg = "Email inviata a " + validRecipients.size() + " destinatari. " +
+                                        "Non consegnata a: " + String.join(", ", invalidRecipients);
+                                response.setOutcomeMessage(msg);
+
+                                controller.appendLog("Invio parziale da " + email.getSender() + ". Validi: " + validRecipients.size() + ", Errati: " + invalidRecipients);
                             }
                         }
                     } else {
+                        // Mittente non valido
                         response.setOutcomeCode("ERROR");
-                        response.setOutcomeMessage("Mittente non valido o dati mancanti.");
+                        response.setOutcomeMessage("Mittente non riconosciuto o dati mancanti.");
                     }
                     break;
 
                 case "GET_UPDATES":
-                    if (model.userExists(user)) {
+                    if (user != null && model.userExists(user)) {
                         java.util.Date clientLastDate = request.getLastUpdateDate();
 
+                        // Recupera solo i messaggi successivi alla data fornita
                         List<Email> updates = model.getInbox(user, clientLastDate);
 
                         response.setEmailList(updates);
@@ -103,7 +124,7 @@ public class ClientHandler implements Runnable {
                         }
                     } else {
                         response.setOutcomeCode("ERROR");
-                        response.setOutcomeMessage("Utente sconosciuto.");
+                        response.setOutcomeMessage("Utente sconosciuto: " + user);
                     }
                     break;
 
@@ -115,35 +136,42 @@ public class ClientHandler implements Runnable {
                         controller.appendLog("Email " + emailToDelete.getId() + " cancellata da " + user);
                     } else {
                         response.setOutcomeCode("ERROR");
-                        response.setOutcomeMessage("Errore cancellazione.");
+                        response.setOutcomeMessage("Errore cancellazione: dati non validi.");
                     }
                     break;
 
                 case "MARK_AS_READ":
                     Email emailToMark = request.getEmail();
                     if (emailToMark != null && model.userExists(user)) {
-                        // Aggiorna lo stato sul server per rendere la lettura persistente
                         model.markAsRead(user, emailToMark.getId());
                         response.setOutcomeCode("OK");
                         controller.appendLog("Email " + emailToMark.getId() + " segnata come letta da " + user);
                     } else {
                         response.setOutcomeCode("ERROR");
-                        response.setOutcomeMessage("Errore durante l'aggiornamento dello stato lettura.");
+                        response.setOutcomeMessage("Errore aggiornamento stato lettura.");
                     }
                     break;
 
                 default:
                     response.setOutcomeCode("ERROR");
-                    response.setOutcomeMessage("Comando sconosciuto");
+                    response.setOutcomeMessage("Comando sconosciuto: " + cmd);
             }
 
+            // Invio risposta JSON
             String jsonResponse = gson.toJson(response);
             out.println(jsonResponse);
 
         } catch (IOException e) {
-            controller.appendLog("Errore I/O Client: " + e.getMessage());
+            if (controller != null) {
+                controller.appendLog("Errore connessione client: " + e.getMessage());
+            }
+            e.printStackTrace();
         } finally {
-            try { socket.close(); } catch (IOException e) {}
+            try {
+                if (socket != null && !socket.isClosed()) socket.close();
+            } catch (IOException e) {
+                // Ignora errori di chiusura
+            }
         }
     }
 }
