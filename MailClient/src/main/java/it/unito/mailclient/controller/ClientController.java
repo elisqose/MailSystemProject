@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -18,7 +19,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
 public class ClientController {
 
     @FXML private VBox loginPane;
@@ -27,7 +27,9 @@ public class ClientController {
     @FXML private TextField emailField;
     @FXML private Label errorLabel;
     @FXML private Label currentUserLabel;
-    @FXML private Label statusLabel;
+
+    @FXML private Label connectionStatusLabel; // Basso Sinistra
+    @FXML private Label notificationLabel;     // Basso Destra
 
     @FXML private TableView<Email> emailTable;
     @FXML private TableColumn<Email, String> colFrom;
@@ -39,29 +41,90 @@ public class ClientController {
     private ClientModel model;
     private ScheduledExecutorService autoRefreshService;
 
+    // NUOVO: Variabile per accumulare le notifiche non lette
+    private int unreadNotificationsCount = 0;
+
     @FXML
     public void initialize() {
         model = new ClientModel();
 
-        errorLabel.textProperty().bind(model.statusMessageProperty());
-        statusLabel.textProperty().bind(model.statusMessageProperty());
+        // Bind messaggi errore login
+        errorLabel.textProperty().bind(model.notificationMessageProperty());
 
-        emailTable.setItems(model.getInbox());
-
-        model.getInbox().addListener((javafx.collections.ListChangeListener.Change<? extends Email> c) -> {
-            while (c.next()) {
-                if (c.wasAdded() && inboxPane.isVisible()) {
-                    // Notifica non intrusiva via console o logica custom
-                    java.awt.Toolkit.getDefaultToolkit().beep();
-                    System.out.println("Nuovi messaggi ricevuti: " + c.getAddedSize());
+        // --- GESTIONE STATO CONNESSIONE (Basso Sinistra) ---
+        connectionStatusLabel.textProperty().bind(model.connectionStateProperty());
+        connectionStatusLabel.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                if (newVal.contains("Connesso")) {
+                    connectionStatusLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                } else {
+                    connectionStatusLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
                 }
             }
         });
 
-        // Configurazione colonne TableView
-        colFrom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender()));
+        // --- GESTIONE NOTIFICHE (Basso Destra) ---
+        // 1. Rendiamo la label cliccabile per cancellare il messaggio E resettare il conteggio
+        notificationLabel.setOnMouseClicked(event -> {
+            model.notificationMessageProperty().set("");
+            unreadNotificationsCount = 0; // RESET DEL CONTATORE
+        });
 
-        // Custom Cell Factory per il pallino rosso (stato non letto)
+        // 2. Listener per aggiornare testo, colore e cursore
+        model.notificationMessageProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isEmpty()) {
+                notificationLabel.setText(newVal);
+                notificationLabel.setCursor(Cursor.HAND);
+
+                if (newVal.startsWith("ERRORE") || newVal.startsWith("Avviso")) {
+                    notificationLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                    // Se c'è un errore, resettiamo il contatore delle mail per evitare confusione
+                    unreadNotificationsCount = 0;
+                } else if (newVal.startsWith("Hai ricevuto")) {
+                    notificationLabel.setStyle("-fx-text-fill: #0066cc; -fx-font-weight: bold;");
+                } else {
+                    notificationLabel.setStyle("-fx-text-fill: black;");
+                }
+            } else {
+                notificationLabel.setText("");
+                notificationLabel.setCursor(Cursor.DEFAULT);
+            }
+        });
+
+        // Collegamento dati Tabella
+        emailTable.setItems(model.getInbox());
+
+        // --- MODIFICA QUI: Logica di accumulo e grammatica ---
+        model.getInbox().addListener((javafx.collections.ListChangeListener.Change<? extends Email> c) -> {
+            while (c.next()) {
+                if (c.wasAdded() && inboxPane.isVisible()) {
+                    final int newInBatch = c.getAddedSize();
+
+                    Platform.runLater(() -> {
+                        // 1. Emette il suono
+                        java.awt.Toolkit.getDefaultToolkit().beep();
+
+                        // 2. Aggiorna il contatore totale (accumula)
+                        unreadNotificationsCount += newInBatch;
+
+                        // 3. Gestisce la grammatica (Singolare vs Plurale)
+                        String message;
+                        if (unreadNotificationsCount == 1) {
+                            message = "Hai ricevuto 1 nuova mail!";
+                        } else {
+                            message = "Hai ricevuto " + unreadNotificationsCount + " nuove mail!";
+                        }
+
+                        // 4. Imposta il messaggio
+                        model.notificationMessageProperty().set(message);
+                    });
+                }
+            }
+        });
+        // -----------------------------------------------------
+
+        // Configurazione colonne
+        colFrom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender()));
         colFrom.setCellFactory(column -> new TableCell<Email, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -84,7 +147,7 @@ public class ClientController {
         colSubject.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSubject()));
         colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getTimestamp()));
 
-        // Gestione selezione messaggio per visualizzazione dettagli
+        // Selezione messaggio
         emailTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showEmailDetails(newValue)
         );
@@ -93,8 +156,6 @@ public class ClientController {
     @FXML
     protected void onLoginButtonClick() {
         String email = emailField.getText().trim();
-        model.statusMessageProperty().set("Connessione in corso...");
-
         new Thread(() -> {
             boolean success = model.login(email);
             Platform.runLater(() -> {
@@ -176,15 +237,14 @@ public class ClientController {
         }
     }
 
+    // --- METODI HELPER ---
+
     private void showEmailDetails(Email email) {
         if (email != null) {
             messageArea.setText(email.getText());
-
             if (!email.isRead()) {
                 email.setRead(true);
-                emailTable.refresh(); // Rimuove il pallino rosso nella UI
-
-                // AGGIUNTA: Comunica al server la lettura
+                emailTable.refresh();
                 model.markEmailAsRead(email);
             }
         } else {
@@ -219,7 +279,9 @@ public class ClientController {
 
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent() && result.get() == sendButtonType) {
-            new Thread(() -> model.sendEmail(toField.getText(), subjectField.getText(), bodyArea.getText())).start();
+            new Thread(() -> {
+                model.sendEmail(toField.getText(), subjectField.getText(), bodyArea.getText());
+            }).start();
         }
     }
 
@@ -235,6 +297,7 @@ public class ClientController {
     protected void onLogoutButtonClick() {
         shutdown();
         model.logout();
+        unreadNotificationsCount = 0; // RESET al logout
         inboxPane.setVisible(false);
         loginPane.setVisible(true);
         emailField.clear();

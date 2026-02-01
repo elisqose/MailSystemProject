@@ -80,6 +80,58 @@
     "subject": "mail multipla",
     "text": "test destinatario invalido ",
     "timestamp": "Feb 1, 2026, 4:57:43 PM",
-    "read": false
+    "read": true
+  },
+  {
+    "id": "5fba9c74-0856-4e45-954f-e712ae5c6c79",
+    "sender": "user3@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova",
+    "timestamp": "Feb 1, 2026, 5:15:37 PM",
+    "read": true
+  },
+  {
+    "id": "fd023b71-5e8c-4a4f-9c40-dbcf3918e14b",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova",
+    "timestamp": "Feb 1, 2026, 5:27:45 PM",
+    "read": true
+  },
+  {
+    "id": "ec9be9b8-a1a3-49b4-a854-0104dee6e0e5",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "testing",
+    "timestamp": "Feb 1, 2026, 5:31:56 PM",
+    "read": true
+  },
+  {
+    "id": "1c4aaf28-532c-4e4a-ba84-646e19eb5089",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "yas",
+    "timestamp": "Feb 1, 2026, 5:36:34 PM",
+    "read": true
   }
 ]

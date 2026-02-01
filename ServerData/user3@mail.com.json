@@ -47,6 +47,117 @@
     "subject": "mail multipla",
     "text": "test destinatario invalido ",
     "timestamp": "Feb 1, 2026, 4:57:43 PM",
+    "read": true
+  },
+  {
+    "id": "a594c38e-3ec2-4e79-9b3f-07b9946f8362",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "yaaaaas",
+    "timestamp": "Feb 1, 2026, 5:22:10 PM",
+    "read": true
+  },
+  {
+    "id": "c0ee9a70-3ff9-4d6e-b210-e2a8ebc41a85",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "taaas",
+    "timestamp": "Feb 1, 2026, 5:26:11 PM",
+    "read": true
+  },
+  {
+    "id": "fd023b71-5e8c-4a4f-9c40-dbcf3918e14b",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova",
+    "timestamp": "Feb 1, 2026, 5:27:45 PM",
+    "read": true
+  },
+  {
+    "id": "ec9be9b8-a1a3-49b4-a854-0104dee6e0e5",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "testing",
+    "timestamp": "Feb 1, 2026, 5:31:56 PM",
+    "read": true
+  },
+  {
+    "id": "85842a44-15ef-4b93-83a3-1a6b7c9c375d",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user3@mail.com"
+    ],
+    "subject": "",
+    "text": "ciaooo",
+    "timestamp": "Feb 1, 2026, 5:32:30 PM",
+    "read": true
+  },
+  {
+    "id": "1c4aaf28-532c-4e4a-ba84-646e19eb5089",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "yas",
+    "timestamp": "Feb 1, 2026, 5:36:34 PM",
+    "read": true
+  },
+  {
+    "id": "2cc21773-a375-4448-a0b2-84540f9e92a5",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user3@mail.com"
+    ],
+    "subject": "",
+    "text": "testing",
+    "timestamp": "Feb 1, 2026, 5:36:57 PM",
+    "read": true
+  },
+  {
+    "id": "bcda524a-0760-477b-b9de-a16e26275d52",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user3@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 1, 2026, 5:37:32 PM",
+    "read": false
+  },
+  {
+    "id": "0ccb64aa-5a03-4af4-b080-e078d4bdc339",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user3@mail.com",
+      "user1@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "Re: mail multipla",
+    "text": "ciaoo",
+    "timestamp": "Feb 1, 2026, 5:37:48 PM",
     "read": false
   }
 ]

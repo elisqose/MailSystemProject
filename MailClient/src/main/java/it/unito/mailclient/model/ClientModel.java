@@ -2,14 +2,12 @@ package it.unito.mailclient.model;
 
 import it.unito.mailclient.shared.Email;
 import it.unito.mailclient.shared.Packet;
-
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,32 +27,29 @@ public class ClientModel {
     private String userEmailAddress;
     private Date lastUpdate = null;
     private final ObservableList<Email> inbox;
-    private final StringProperty statusMessage;
-    private final Gson gson;
 
+    // DUE PROPRIETA' DISTINTE
+    private final StringProperty connectionState;    // Basso a Sinistra (Permanente)
+    private final StringProperty notificationMessage; // Basso a Destra (Temporaneo)
+
+    private final Gson gson;
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
     public ClientModel() {
         this.inbox = FXCollections.observableArrayList();
-        this.statusMessage = new SimpleStringProperty("In attesa di login...");
+        this.connectionState = new SimpleStringProperty("Offline");
+        this.notificationMessage = new SimpleStringProperty("");
         this.gson = new Gson();
     }
 
-    public ObservableList<Email> getInbox() {
-        return inbox;
-    }
-
-    public StringProperty statusMessageProperty() {
-        return statusMessage;
-    }
-
-    public String getUserEmailAddress() {
-        return userEmailAddress;
-    }
+    public ObservableList<Email> getInbox() { return inbox; }
+    public StringProperty connectionStateProperty() { return connectionState; }
+    public StringProperty notificationMessageProperty() { return notificationMessage; }
+    public String getUserEmailAddress() { return userEmailAddress; }
 
     public boolean login(String email) {
         if (!isValidEmail(email)) {
-            setStatus("Formato email non valido!");
+            setNotification("Formato email non valido!");
             return false;
         }
 
@@ -68,7 +63,8 @@ public class ClientModel {
 
         if (response != null && "OK".equals(response.getOutcomeCode())) {
             this.userEmailAddress = email;
-            setStatus("Connesso come: " + email);
+            setConnectionState("Connesso: " + email); // Aggiorna stato sinistra
+            setNotification("Login effettuato.");       // Aggiorna notifica destra
 
             List<Email> initialEmails = response.getEmailList();
             if (initialEmails != null) {
@@ -78,8 +74,9 @@ public class ClientModel {
         } else {
             String msg = (response != null && response.getOutcomeMessage() != null)
                     ? response.getOutcomeMessage()
-                    : "Errore di connessione o utente non trovato.";
-            setStatus(msg);
+                    : "Errore login o utente inesistente.";
+            setNotification(msg);
+            setConnectionState("Offline");
             return false;
         }
     }
@@ -88,7 +85,8 @@ public class ClientModel {
         this.userEmailAddress = null;
         this.lastUpdate = null;
         this.inbox.clear();
-        setStatus("Disconnesso.");
+        setConnectionState("Offline");
+        setNotification("Disconnesso.");
     }
 
     public void refreshInbox() {
@@ -100,22 +98,23 @@ public class ClientModel {
         Packet response = sendRequest(request);
 
         if (response != null && "OK".equals(response.getOutcomeCode())) {
-            // Ripristino stato se eravamo offline (Riconnessione Automatica)
-            if (statusMessage.get().contains("non raggiungibile")) {
-                setStatus("Connesso come: " + userEmailAddress);
-            }
+            // Se la richiesta va a buon fine, il server è ONLINE
+            Platform.runLater(() -> connectionState.set("Connesso: " + userEmailAddress));
 
             List<Email> newEmails = response.getEmailList();
             if (newEmails != null && !newEmails.isEmpty()) {
                 Platform.runLater(() -> addNewEmailsLocal(newEmails));
             }
+        } else {
+            // Se response è null (sendRequest ha fallito), il server è OFFLINE
+            Platform.runLater(() -> connectionState.set("Errore di Connessione (Server Offline)"));
         }
     }
 
-    public void sendEmail(String recipientsStr, String subject, String text) {
-        if (userEmailAddress == null) return;
+    // Ritorna l'errore se c'è, altrimenti null (per i popup se volessi usarli)
+    public String sendEmail(String recipientsStr, String subject, String text) {
+        if (userEmailAddress == null) return "Non connesso";
 
-        // 1. Validazione locale degli indirizzi (Regex)
         String[] recipientArray = recipientsStr.split("[,;\\s]+");
         List<String> validRecipients = new ArrayList<>();
 
@@ -125,35 +124,33 @@ public class ClientModel {
             if (isValidEmail(trimmed)) {
                 if (!validRecipients.contains(trimmed)) validRecipients.add(trimmed);
             } else {
-                setStatus("Indirizzo destinatario non valido: " + trimmed);
-                return;
+                setNotification("Indirizzo non valido: " + trimmed);
+                return "Indirizzo non valido: " + trimmed;
             }
         }
 
         if (validRecipients.isEmpty()) {
-            setStatus("Nessun destinatario valido specificato.");
-            return;
+            setNotification("Nessun destinatario valido.");
+            return "Nessun destinatario valido.";
         }
 
-        // 2. Creazione dell'oggetto Email e del pacchetto di richiesta
         Email email = new Email(userEmailAddress, validRecipients, subject, text);
         Packet request = new Packet("SEND_EMAIL", userEmailAddress);
         request.setEmail(email);
 
-        // 3. Invio della richiesta al server
         Packet response = sendRequest(request);
 
-        // 4. Gestione della risposta e degli errori (Aggiornato)
         if (response != null && "OK".equals(response.getOutcomeCode())) {
-            // Caso di successo
-            setStatus("Email inviata con successo!");
+            setNotification("Email inviata con successo!");
+            return null;
         } else if (response != null) {
-            // Caso in cui il server risponde con un errore (es. destinatario inesistente)
-            setStatus("Avviso: " + response.getOutcomeMessage());
+            String msg = "Avviso: " + response.getOutcomeMessage();
+            setNotification(msg);
+            return msg;
         } else {
-            // Caso in cui il server è offline (response è null)
-            // Questo corregge il problema della "mail sparita" senza avviso
-            setStatus("ERRORE: Impossibile inviare la mail. Server non raggiungibile.");
+            String msg = "ERRORE: Server non raggiungibile. Email non inviata";
+            setNotification(msg);
+            return msg;
         }
     }
 
@@ -166,54 +163,46 @@ public class ClientModel {
         Packet response = sendRequest(request);
 
         if (response != null && "OK".equals(response.getOutcomeCode())) {
-            setStatus("Email cancellata.");
+            setNotification("Email cancellata.");
             Platform.runLater(() -> inbox.remove(emailToDelete));
-        } else if (response != null) {
-            setStatus("Errore cancellazione: " + response.getOutcomeMessage());
+        } else {
+            setNotification("Errore cancellazione.");
         }
     }
 
-    /**
-     * Comunica al server che un'email è stata letta per garantirne la persistenza.
-     */
     public void markEmailAsRead(Email email) {
         if (userEmailAddress == null || email == null) return;
-
         Packet request = new Packet("MARK_AS_READ", userEmailAddress);
         request.setEmail(email);
-
-        // Invio in un nuovo thread per non bloccare l'interfaccia durante la lettura
-        new Thread(() -> {
-            sendRequest(request);
-        }).start();
+        new Thread(() -> sendRequest(request)).start();
     }
 
     private boolean isValidEmail(String email) {
         return email != null && EMAIL_PATTERN.matcher(email).matches();
     }
 
-    private void setStatus(String text) {
-        Platform.runLater(() -> statusMessage.set(text));
+    private void setNotification(String text) {
+        Platform.runLater(() -> notificationMessage.set(text));
+    }
+
+    private void setConnectionState(String text) {
+        Platform.runLater(() -> connectionState.set(text));
     }
 
     private void addNewEmailsLocal(List<Email> newEmails) {
+        // ... (Logica identica a prima) ...
         if (newEmails == null || newEmails.isEmpty()) return;
-
         boolean listChanged = false;
         for (Email email : newEmails) {
-            boolean alreadyExists = this.inbox.stream()
-                    .anyMatch(existing -> existing.getId().equals(email.getId()));
-
+            boolean alreadyExists = this.inbox.stream().anyMatch(existing -> existing.getId().equals(email.getId()));
             if (!alreadyExists) {
                 this.inbox.add(email);
                 listChanged = true;
             }
         }
-
         if (listChanged) {
             this.inbox.sort(Comparator.comparing(Email::getTimestamp).reversed());
             if (!this.inbox.isEmpty()) {
-                // Aggiorniamo il timestamp dell'ultimo messaggio per i futuri GET_UPDATES
                 this.lastUpdate = this.inbox.get(0).getTimestamp();
             }
         }
@@ -225,15 +214,12 @@ public class ClientModel {
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
             out.println(gson.toJson(request));
-
             String jsonResponse = in.readLine();
             if (jsonResponse != null) {
                 return gson.fromJson(jsonResponse, Packet.class);
             }
-
         } catch (IOException e) {
-            // Feedback per la riconnessione automatica (Trasparenza)
-            setStatus("ERRORE: Server non raggiungibile. Tentativo di riconnessione...");
+            // Qui gestiamo solo il return null, la UI si aggiorna in refreshInbox o nei metodi specifici
         }
         return null;
     }

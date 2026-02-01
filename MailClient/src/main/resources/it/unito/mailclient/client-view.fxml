@@ -97,10 +97,17 @@
         </center>
 
         <bottom>
-            <HBox style="-fx-padding: 5; -fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-width: 1 0 0 0;">
-                <Label text="Stato: " style="-fx-font-weight: bold;"/>
-                <Label fx:id="statusLabel" text="Pronto."/>
-            </HBox>
+            <BorderPane style="-fx-padding: 5; -fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-width: 1 0 0 0;">
+                <left>
+                    <HBox spacing="5" alignment="CENTER_LEFT">
+                        <Label text="Stato Server:" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                        <Label fx:id="connectionStatusLabel" text="Offline" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                </left>
+                <right>
+                    <Label fx:id="notificationLabel" text=""/>
+                </right>
+            </BorderPane>
         </bottom>
 
     </BorderPane>

@@ -46,6 +46,43 @@
     "subject": "mail multipla",
     "text": "test destinatario invalido ",
     "timestamp": "Feb 1, 2026, 4:57:43 PM",
-    "read": false
+    "read": true
+  },
+  {
+    "id": "5fba9c74-0856-4e45-954f-e712ae5c6c79",
+    "sender": "user3@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova",
+    "timestamp": "Feb 1, 2026, 5:15:37 PM",
+    "read": true
+  },
+  {
+    "id": "0ccb64aa-5a03-4af4-b080-e078d4bdc339",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user3@mail.com",
+      "user1@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "Re: mail multipla",
+    "text": "ciaoo",
+    "timestamp": "Feb 1, 2026, 5:37:48 PM",
+    "read": true
+  },
+  {
+    "id": "61bc300d-c299-43be-a565-1f3b1088be16",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user1@mail.com"
+    ],
+    "subject": "Fwd: ",
+    "text": "\n\n--- Inoltrato ---\ntesting",
+    "timestamp": "Feb 1, 2026, 5:38:05 PM",
+    "read": true
   }
 ]
