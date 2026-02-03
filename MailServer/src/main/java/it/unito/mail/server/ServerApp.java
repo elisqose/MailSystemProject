@@ -40,9 +40,7 @@ public class ServerApp extends Application {
 
     private void startServer(ServerController controller) {
         Thread serverThread = new Thread(() -> {
-            // 1. CREAZIONE DEL THREAD POOL
-            // Usiamo 'newCachedThreadPool': crea nuovi thread se necessario,
-            // ma riutilizza quelli precedentemente costruiti se sono disponibili.
+
             ExecutorService threadPool = Executors.newCachedThreadPool();
 
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -54,8 +52,6 @@ public class ServerApp extends Application {
 
                     ClientHandler handler = new ClientHandler(clientSocket, controller);
 
-                    // 2. ESECUZIONE TRAMITE IL POOL
-                    // Invece di 'new Thread(handler).start()', passiamo il compito al pool
                     threadPool.execute(handler);
                 }
 
@@ -63,9 +59,7 @@ public class ServerApp extends Application {
                 controller.appendLog("Errore Server: " + e.getMessage());
                 e.printStackTrace();
             } finally {
-                // 3. CHIUSURA PULITA
-                // Se il serverSocket si chiude (o c'è un errore fatale),
-                // chiudiamo anche il pool di thread per liberare le risorse.
+
                 threadPool.shutdown();
             }
         });

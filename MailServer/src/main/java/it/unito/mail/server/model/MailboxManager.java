@@ -24,7 +24,6 @@ public class MailboxManager {
     private static final String DATA_DIR = "ServerData";
     private final Gson gson;
 
-    // Mappa per gestire lock granulari per ogni utente (Scalabilità)
     private final Map<String, ReadWriteLock> userLocks = new ConcurrentHashMap<>();
 
     private static MailboxManager instance;
@@ -41,9 +40,6 @@ public class MailboxManager {
         return instance;
     }
 
-    /**
-     * Ritorna il lock specifico per l'utente, creandolo se non esiste.
-     */
     private ReadWriteLock getUserLock(String email) {
         return userLocks.computeIfAbsent(email.toLowerCase(), k -> new ReentrantReadWriteLock());
     }
@@ -70,7 +66,6 @@ public class MailboxManager {
         return false;
     }
 
-    // SCRITTURA: Usa Lock di Scrittura specifico per utente
     public void depositEmail(String recipient, Email email) throws IOException {
         ReadWriteLock lock = getUserLock(recipient);
         lock.writeLock().lock();
@@ -84,7 +79,6 @@ public class MailboxManager {
         }
     }
 
-    // LETTURA: Usa Lock di Lettura specifico per utente (Condiviso)
     public List<Email> getInbox(String user) {
         if (!userExists(user)) return Collections.emptyList();
 
@@ -101,7 +95,6 @@ public class MailboxManager {
         }
     }
 
-    // LETTURA: Thread-safe tramite getInbox(user)
     public List<Email> getInbox(String user, java.util.Date since) {
         List<Email> allEmails = getInbox(user);
 
@@ -118,7 +111,6 @@ public class MailboxManager {
         return newEmails;
     }
 
-    // SCRITTURA: Usa Lock di Scrittura specifico per utente
     public void deleteEmail(String user, String emailId) throws IOException {
         ReadWriteLock lock = getUserLock(user);
         lock.writeLock().lock();
@@ -151,7 +143,6 @@ public class MailboxManager {
         }
     }
 
-    // SCRITTURA: Usa Lock di Scrittura specifico per utente
     public void markAsRead(String user, String emailId) throws IOException {
         ReadWriteLock lock = getUserLock(user);
         lock.writeLock().lock();
