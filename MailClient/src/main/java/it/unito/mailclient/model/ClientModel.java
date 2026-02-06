@@ -23,15 +23,11 @@ public class ClientModel {
 
     private static final String SERVER_IP = "127.0.0.1";
     private static final int SERVER_PORT = 8189;
-
     private String userEmailAddress;
     private Date lastUpdate = null;
     private final ObservableList<Email> inbox;
-
-    // DUE PROPRIETA' DISTINTE
-    private final StringProperty connectionState;    // Basso a Sinistra (Permanente)
-    private final StringProperty notificationMessage; // Basso a Destra (Temporaneo)
-
+    private final StringProperty connectionState;
+    private final StringProperty notificationMessage;
     private final Gson gson;
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
@@ -63,8 +59,8 @@ public class ClientModel {
 
         if (response != null && "OK".equals(response.getOutcomeCode())) {
             this.userEmailAddress = email;
-            setConnectionState("Connesso: " + email); // Aggiorna stato sinistra
-            setNotification("Login effettuato.");       // Aggiorna notifica destra
+            setConnectionState("Connesso: " + email);
+            setNotification("Login effettuato.");
 
             List<Email> initialEmails = response.getEmailList();
             if (initialEmails != null) {
@@ -98,7 +94,7 @@ public class ClientModel {
         Packet response = sendRequest(request);
 
         if (response != null && "OK".equals(response.getOutcomeCode())) {
-            // Se la richiesta va a buon fine, il server è ONLINE
+
             Platform.runLater(() -> connectionState.set("Connesso: " + userEmailAddress));
 
             List<Email> newEmails = response.getEmailList();
@@ -106,12 +102,10 @@ public class ClientModel {
                 Platform.runLater(() -> addNewEmailsLocal(newEmails));
             }
         } else {
-            // Se response è null (sendRequest ha fallito), il server è OFFLINE
             Platform.runLater(() -> connectionState.set("Errore di Connessione (Server Offline)"));
         }
     }
 
-    // Ritorna l'errore se c'è, altrimenti null (per i popup se volessi usarli)
     public String sendEmail(String recipientsStr, String subject, String text) {
         if (userEmailAddress == null) return "Non connesso";
 
@@ -190,7 +184,6 @@ public class ClientModel {
     }
 
     private void addNewEmailsLocal(List<Email> newEmails) {
-        // ... (Logica identica a prima) ...
         if (newEmails == null || newEmails.isEmpty()) return;
         boolean listChanged = false;
         for (Email email : newEmails) {
@@ -219,7 +212,6 @@ public class ClientModel {
                 return gson.fromJson(jsonResponse, Packet.class);
             }
         } catch (IOException e) {
-            // Qui gestiamo solo il return null, la UI si aggiorna in refreshInbox o nei metodi specifici
         }
         return null;
     }

@@ -23,35 +23,27 @@ public class ClientController {
 
     @FXML private VBox loginPane;
     @FXML private BorderPane inboxPane;
-
     @FXML private TextField emailField;
     @FXML private Label errorLabel;
     @FXML private Label currentUserLabel;
-
-    @FXML private Label connectionStatusLabel; // Basso Sinistra
-    @FXML private Label notificationLabel;     // Basso Destra
-
+    @FXML private Label connectionStatusLabel;
+    @FXML private Label notificationLabel;
     @FXML private TableView<Email> emailTable;
     @FXML private TableColumn<Email, String> colFrom;
     @FXML private TableColumn<Email, String> colSubject;
     @FXML private TableColumn<Email, Date> colDate;
-
     @FXML private TextArea messageArea;
 
     private ClientModel model;
     private ScheduledExecutorService autoRefreshService;
-
-    // NUOVO: Variabile per accumulare le notifiche non lette
     private int unreadNotificationsCount = 0;
 
     @FXML
     public void initialize() {
         model = new ClientModel();
 
-        // Bind messaggi errore login
         errorLabel.textProperty().bind(model.notificationMessageProperty());
 
-        // --- GESTIONE STATO CONNESSIONE (Basso Sinistra) ---
         connectionStatusLabel.textProperty().bind(model.connectionStateProperty());
         connectionStatusLabel.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -63,14 +55,13 @@ public class ClientController {
             }
         });
 
-        // --- GESTIONE NOTIFICHE (Basso Destra) ---
-        // 1. Rendiamo la label cliccabile per cancellare il messaggio E resettare il conteggio
+
         notificationLabel.setOnMouseClicked(event -> {
             model.notificationMessageProperty().set("");
-            unreadNotificationsCount = 0; // RESET DEL CONTATORE
+            unreadNotificationsCount = 0;
         });
 
-        // 2. Listener per aggiornare testo, colore e cursore
+
         model.notificationMessageProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && !newVal.isEmpty()) {
                 notificationLabel.setText(newVal);
@@ -78,7 +69,6 @@ public class ClientController {
 
                 if (newVal.startsWith("ERRORE") || newVal.startsWith("Avviso")) {
                     notificationLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-                    // Se c'è un errore, resettiamo il contatore delle mail per evitare confusione
                     unreadNotificationsCount = 0;
                 } else if (newVal.startsWith("Hai ricevuto")) {
                     notificationLabel.setStyle("-fx-text-fill: #0066cc; -fx-font-weight: bold;");
@@ -91,23 +81,19 @@ public class ClientController {
             }
         });
 
-        // Collegamento dati Tabella
         emailTable.setItems(model.getInbox());
 
-        // --- MODIFICA QUI: Logica di accumulo e grammatica ---
         model.getInbox().addListener((javafx.collections.ListChangeListener.Change<? extends Email> c) -> {
             while (c.next()) {
                 if (c.wasAdded() && inboxPane.isVisible()) {
                     final int newInBatch = c.getAddedSize();
 
                     Platform.runLater(() -> {
-                        // 1. Emette il suono
+
                         java.awt.Toolkit.getDefaultToolkit().beep();
 
-                        // 2. Aggiorna il contatore totale (accumula)
                         unreadNotificationsCount += newInBatch;
 
-                        // 3. Gestisce la grammatica (Singolare vs Plurale)
                         String message;
                         if (unreadNotificationsCount == 1) {
                             message = "Hai ricevuto 1 nuova mail!";
@@ -115,15 +101,12 @@ public class ClientController {
                             message = "Hai ricevuto " + unreadNotificationsCount + " nuove mail!";
                         }
 
-                        // 4. Imposta il messaggio
                         model.notificationMessageProperty().set(message);
                     });
                 }
             }
         });
-        // -----------------------------------------------------
 
-        // Configurazione colonne
         colFrom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSender()));
         colFrom.setCellFactory(column -> new TableCell<Email, String>() {
             @Override
@@ -147,7 +130,6 @@ public class ClientController {
         colSubject.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSubject()));
         colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getTimestamp()));
 
-        // Selezione messaggio
         emailTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showEmailDetails(newValue)
         );
@@ -237,8 +219,6 @@ public class ClientController {
         }
     }
 
-    // --- METODI HELPER ---
-
     private void showEmailDetails(Email email) {
         if (email != null) {
             messageArea.setText(email.getText());
@@ -297,7 +277,7 @@ public class ClientController {
     protected void onLogoutButtonClick() {
         shutdown();
         model.logout();
-        unreadNotificationsCount = 0; // RESET al logout
+        unreadNotificationsCount = 0;
         inboxPane.setVisible(false);
         loginPane.setVisible(true);
         emailField.clear();

@@ -11,30 +11,6 @@
     "read": true
   },
   {
-    "id": "b59e0adf-3910-4b2d-a31c-28a15c87c1aa",
-    "sender": "user2@mail.com",
-    "recipients": [
-      "user1@mail.com",
-      "user3@mail.com",
-      "user5@mail.com"
-    ],
-    "subject": "",
-    "text": "prova",
-    "timestamp": "Jan 31, 2026, 6:06:36 PM",
-    "read": true
-  },
-  {
-    "id": "1f6e6118-07e8-4b6d-889d-df02145af5a0",
-    "sender": "user2@mail.com",
-    "recipients": [
-      "user1@mail.com"
-    ],
-    "subject": "",
-    "text": "prova beep",
-    "timestamp": "Feb 1, 2026, 4:38:26 PM",
-    "read": true
-  },
-  {
     "id": "c233480a-e381-4b30-9c03-78debff3d5c7",
     "sender": "user3@mail.com",
     "recipients": [
@@ -72,17 +48,6 @@
     "subject": "Re: mail multipla",
     "text": "ciaoo",
     "timestamp": "Feb 1, 2026, 5:37:48 PM",
-    "read": true
-  },
-  {
-    "id": "61bc300d-c299-43be-a565-1f3b1088be16",
-    "sender": "user2@mail.com",
-    "recipients": [
-      "user1@mail.com"
-    ],
-    "subject": "Fwd: ",
-    "text": "\n\n--- Inoltrato ---\ntesting",
-    "timestamp": "Feb 1, 2026, 5:38:05 PM",
     "read": true
   }
 ]
