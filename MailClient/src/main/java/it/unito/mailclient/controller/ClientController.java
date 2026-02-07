@@ -1,6 +1,6 @@
 package it.unito.mailclient.controller;
 
-import it.unito.mail.Common;
+import it.unito.mail.common;
 import it.unito.mailclient.model.ClientModel;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;

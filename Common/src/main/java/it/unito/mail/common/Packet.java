@@ -1,4 +1,4 @@
-package it.unito.mail.Common;
+package it.unito.mail.common;
 
 import java.io.Serializable;
 import java.util.List;
