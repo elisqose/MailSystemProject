@@ -1,4 +1,4 @@
-package it.unito.mailclient.shared;
+package it.unito.mail.Common;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,7 +20,6 @@ public class Email implements Serializable {
     private String subject;
     private String text;
     private Date timestamp;
-
     private boolean read = false;
 
     public Email() {}

@@ -13,6 +13,7 @@
     <modules>
         <module>MailServer</module>
         <module>MailClient</module>
+        <module>Common</module>
     </modules>
 
     <properties>

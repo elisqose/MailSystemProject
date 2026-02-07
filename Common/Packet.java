@@ -1,4 +1,4 @@
-package it.unito.mailclient.shared;
+package it.unito.mail.Common;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,7 +20,6 @@ public class Packet implements Serializable {
         this.command = command;
         this.userEmailAddress = userEmailAddress;
     }
-
 
     public String getCommand() {
         return command;
@@ -46,9 +45,7 @@ public class Packet implements Serializable {
     public void setEmailList(List<Email> emailList) {
         this.emailList = emailList;
     }
-    public String getOutcomeCode() {
-        return outcomeCode;
-    }
+    public String getOutcomeCode() { return outcomeCode; }
     public void setOutcomeCode(String outcomeCode) {
         this.outcomeCode = outcomeCode;
     }
