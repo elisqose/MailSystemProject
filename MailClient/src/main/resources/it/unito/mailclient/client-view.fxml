@@ -31,7 +31,7 @@
                 </font>
             </TextField>
 
-            <Button text="Accedi alla Casella" onAction="#onLoginButtonClick" defaultButton="true"
+            <Button fx:id="loginButton" text="Accedi alla Casella" onAction="#onLoginButtonClick" defaultButton="true"
                     prefWidth="200" prefHeight="40"
                     style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
 

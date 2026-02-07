@@ -34,6 +34,7 @@ public class ClientController {
     @FXML private TableColumn<Email, String> colSubject;
     @FXML private TableColumn<Email, Date> colDate;
     @FXML private TextArea messageArea;
+    @FXML private Button loginButton;
 
     private ClientModel model;
     private ScheduledExecutorService autoRefreshService;
@@ -139,6 +140,9 @@ public class ClientController {
     @FXML
     protected void onLoginButtonClick() {
         String email = emailField.getText().trim();
+        emailField.setDisable(true);
+        loginButton.setDisable(true);
+
         new Thread(() -> {
             boolean success = model.login(email);
             Platform.runLater(() -> {
@@ -147,6 +151,10 @@ public class ClientController {
                     inboxPane.setVisible(true);
                     currentUserLabel.setText("Utente: " + email);
                     startAutoRefresh();
+                }
+                else {
+                    emailField.setDisable(false);
+                    loginButton.setDisable(false);
                 }
             });
         }).start();

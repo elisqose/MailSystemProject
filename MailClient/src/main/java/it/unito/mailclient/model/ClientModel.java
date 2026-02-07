@@ -212,6 +212,8 @@ public class ClientModel {
                 return gson.fromJson(jsonResponse, Packet.class);
             }
         } catch (IOException e) {
+            System.err.println("Errore I/O durante la comunicazione: " + e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
