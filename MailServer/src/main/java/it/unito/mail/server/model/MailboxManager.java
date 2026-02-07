@@ -3,8 +3,8 @@ package it.unito.mail.server.model;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import it.unito.mail.server.shared.Email;
-
+import it.unito.mail.common.Email;
+import it.unito.mail.common.Packet;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.file.Files;

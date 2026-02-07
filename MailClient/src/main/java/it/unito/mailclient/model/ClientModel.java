@@ -1,7 +1,7 @@
 package it.unito.mailclient.model;
 
-import it.unito.mailclient.shared.Email;
-import it.unito.mailclient.shared.Packet;
+import it.unito.mail.common.Email;
+import it.unito.mail.common.Packet;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
