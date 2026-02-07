@@ -133,5 +133,27 @@
     "text": "yas",
     "timestamp": "Feb 1, 2026, 5:36:34 PM",
     "read": true
+  },
+  {
+    "id": "7bac3017-9de5-4cb3-9c11-48bab2170903",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 6, 2026, 11:15:29 PM",
+    "read": true
+  },
+  {
+    "id": "d56c4af6-2d19-4fbd-95ee-50d86231d2ae",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 6, 2026, 11:16:05 PM",
+    "read": true
   }
 ]

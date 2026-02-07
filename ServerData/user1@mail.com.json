@@ -1,16 +1,5 @@
 [
   {
-    "id": "87802c64-747c-48dc-a8df-dff8ce090e2b",
-    "sender": "user2@mail.com",
-    "recipients": [
-      "user1@mail.com"
-    ],
-    "subject": "Test",
-    "text": "Prova",
-    "timestamp": "Jan 31, 2026, 3:40:07 PM",
-    "read": true
-  },
-  {
     "id": "c233480a-e381-4b30-9c03-78debff3d5c7",
     "sender": "user3@mail.com",
     "recipients": [
