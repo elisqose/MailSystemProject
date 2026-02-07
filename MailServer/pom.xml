@@ -11,6 +11,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <artifactId>MailServer</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>it.unito</groupId>
