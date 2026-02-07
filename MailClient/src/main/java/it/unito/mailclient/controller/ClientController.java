@@ -227,8 +227,22 @@ public class ClientController {
                 email.setRead(true);
                 emailTable.refresh();
                 model.markEmailAsRead(email);
+
+                if (unreadNotificationsCount > 0) {
+                    unreadNotificationsCount--;
+
+                    if (unreadNotificationsCount == 0) {
+                        model.notificationMessageProperty().set("");
+                    } else {
+                        String msg = (unreadNotificationsCount == 1)
+                                ? "Hai 1 nuova mail!"
+                                : "Hai " + unreadNotificationsCount + " nuove mail!";
+                        model.notificationMessageProperty().set(msg);
+                    }
+                }
             }
-        } else {
+        }
+        else {
             messageArea.clear();
         }
     }
