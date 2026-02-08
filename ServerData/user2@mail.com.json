@@ -231,5 +231,58 @@
     "text": "",
     "timestamp": "Feb 8, 2026, 5:58:29 PM",
     "read": true
+  },
+  {
+    "id": "beb2820a-9214-4eb4-8f4b-d5a474e5bfb4",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "prova",
+    "timestamp": "Feb 8, 2026, 6:14:26 PM",
+    "read": true
+  },
+  {
+    "id": "4dd3d5ef-3d26-4d6e-b3dd-882b9b2a8a82",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user6@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 8, 2026, 6:18:30 PM",
+    "read": true
+  },
+  {
+    "id": "f9548dcb-10dc-49a2-92c9-85db06160fe9",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com",
+      "user6@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 8, 2026, 6:30:04 PM",
+    "read": false
+  },
+  {
+    "id": "a8b90f90-92f9-45f2-b770-7dc57d239bf1",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 8, 2026, 6:33:17 PM",
+    "read": false
   }
 ]

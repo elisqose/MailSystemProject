@@ -105,7 +105,11 @@
                     </HBox>
                 </left>
                 <right>
-                    <Label fx:id="notificationLabel" text=""/>
+                    <Label fx:id="notificationLabel" text=""
+                           wrapText="true"
+                           maxWidth="500"
+                           textAlignment="RIGHT"
+                           style="-fx-font-size: 11px;"/>
                 </right>
             </BorderPane>
         </bottom>
