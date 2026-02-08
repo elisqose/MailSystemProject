@@ -60,5 +60,16 @@
     "text": "",
     "timestamp": "Feb 7, 2026, 4:55:54 PM",
     "read": true
+  },
+  {
+    "id": "68d77e3e-72ce-494e-98d6-54fccf22934c",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user1@mail.com"
+    ],
+    "subject": "Re: Fwd: test",
+    "text": "reply",
+    "timestamp": "Feb 8, 2026, 5:58:13 PM",
+    "read": true
   }
 ]

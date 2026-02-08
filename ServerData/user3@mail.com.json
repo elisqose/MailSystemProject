@@ -145,7 +145,7 @@
     "subject": "",
     "text": "",
     "timestamp": "Feb 1, 2026, 5:37:32 PM",
-    "read": false
+    "read": true
   },
   {
     "id": "0ccb64aa-5a03-4af4-b080-e078d4bdc339",
@@ -158,6 +158,31 @@
     "subject": "Re: mail multipla",
     "text": "ciaoo",
     "timestamp": "Feb 1, 2026, 5:37:48 PM",
-    "read": false
+    "read": true
+  },
+  {
+    "id": "8e40ccea-d918-4eee-a11d-cf4c7db38e96",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "prova\n",
+    "timestamp": "Feb 8, 2026, 5:55:00 PM",
+    "read": true
+  },
+  {
+    "id": "075afdf0-e22f-4212-a693-ecd686a4fef7",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "Fwd: test",
+    "text": "\n\n--- Inoltrato ---\nprova",
+    "timestamp": "Feb 8, 2026, 5:57:56 PM",
+    "read": true
   }
 ]

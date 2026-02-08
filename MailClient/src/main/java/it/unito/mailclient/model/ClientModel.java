@@ -111,21 +111,22 @@ public class ClientModel {
 
         String[] recipientArray = recipientsStr.split("[,;\\s]+");
         List<String> validRecipients = new ArrayList<>();
+        List<String> malformedRecipients = new ArrayList<>();
 
         for (String r : recipientArray) {
             String trimmed = r.trim();
             if (trimmed.isEmpty()) continue;
+
             if (isValidEmail(trimmed)) {
                 if (!validRecipients.contains(trimmed)) validRecipients.add(trimmed);
             } else {
-                setNotification("Indirizzo non valido: " + trimmed);
-                return "Indirizzo non valido: " + trimmed;
+                malformedRecipients.add(trimmed);
             }
         }
 
         if (validRecipients.isEmpty()) {
-            setNotification("Nessun destinatario valido.");
-            return "Nessun destinatario valido.";
+            setNotification("Nessun indirizzo email valido inserito.");
+            return "Nessun indirizzo email valido inserito.";
         }
 
         Email email = new Email(userEmailAddress, validRecipients, subject, text);
@@ -135,10 +136,23 @@ public class ClientModel {
         Packet response = sendRequest(request);
 
         if (response != null && "OK".equals(response.getOutcomeCode())) {
-            setNotification("Email inviata con successo!");
-            return null;
+
+            if (!malformedRecipients.isEmpty()) {
+                String msg = "Inviata. Indirizzi errati ignorati: " + String.join(", ", malformedRecipients);
+                setNotification(msg);
+                return msg;
+            } else {
+                setNotification("Email inviata con successo!");
+                return null;
+            }
+
         } else if (response != null) {
             String msg = "Avviso: " + response.getOutcomeMessage();
+
+            if (!malformedRecipients.isEmpty()) {
+                msg += " (Ignorati formati errati: " + String.join(", ", malformedRecipients) + ")";
+            }
+
             setNotification(msg);
             return msg;
         } else {

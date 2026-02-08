@@ -155,5 +155,81 @@
     "text": "",
     "timestamp": "Feb 6, 2026, 11:16:05 PM",
     "read": true
+  },
+  {
+    "id": "f142e5e4-820f-4272-bbb9-4b799dcf69d5",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com"
+    ],
+    "subject": "",
+    "text": "prova",
+    "timestamp": "Feb 8, 2026, 5:52:29 PM",
+    "read": true
+  },
+  {
+    "id": "8e40ccea-d918-4eee-a11d-cf4c7db38e96",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "prova\n",
+    "timestamp": "Feb 8, 2026, 5:55:00 PM",
+    "read": true
+  },
+  {
+    "id": "4054fafc-ef31-4019-be19-afa56eb56f93",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user5@mail.com",
+      "user7@mail.com"
+    ],
+    "subject": "",
+    "text": "prova",
+    "timestamp": "Feb 8, 2026, 5:55:45 PM",
+    "read": true
+  },
+  {
+    "id": "6571f33f-32ca-4b4e-a762-904822a56461",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user5@mail.com",
+      "user8@mail.com",
+      "user7@mail.com",
+      "user9@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 8, 2026, 5:56:31 PM",
+    "read": true
+  },
+  {
+    "id": "075afdf0-e22f-4212-a693-ecd686a4fef7",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "Fwd: test",
+    "text": "\n\n--- Inoltrato ---\nprova",
+    "timestamp": "Feb 8, 2026, 5:57:56 PM",
+    "read": true
+  },
+  {
+    "id": "d043c954-8f89-4978-a934-60e480bca7d4",
+    "sender": "User3@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com"
+    ],
+    "subject": "Re: Fwd: test",
+    "text": "",
+    "timestamp": "Feb 8, 2026, 5:58:29 PM",
+    "read": true
   }
 ]

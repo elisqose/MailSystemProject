@@ -13,6 +13,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
+import javafx.scene.Node;
+import javafx.scene.control.TableRow;
+import javafx.scene.input.MouseEvent;
 
 import java.util.Date;
 import java.util.Optional;
@@ -57,12 +60,10 @@ public class ClientController {
             }
         });
 
-
         notificationLabel.setOnMouseClicked(event -> {
             model.notificationMessageProperty().set("");
             unreadNotificationsCount = 0;
         });
-
 
         model.notificationMessageProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && !newVal.isEmpty()) {
@@ -91,7 +92,6 @@ public class ClientController {
                     final int newInBatch = c.getAddedSize();
 
                     Platform.runLater(() -> {
-
                         java.awt.Toolkit.getDefaultToolkit().beep();
 
                         unreadNotificationsCount += newInBatch;
@@ -135,6 +135,23 @@ public class ClientController {
         emailTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showEmailDetails(newValue)
         );
+
+        emailTable.setOnMouseClicked(event -> {
+            Node node = ((Node) event.getTarget());
+
+            TableRow<?> row = null;
+            while (node != null) {
+                if (node instanceof TableRow) {
+                    row = (TableRow<?>) node;
+                    break;
+                }
+                node = node.getParent();
+            }
+
+            if (row == null || row.isEmpty()) {
+                emailTable.getSelectionModel().clearSelection();
+            }
+        });
     }
 
     @FXML
@@ -305,6 +322,8 @@ public class ClientController {
         loginPane.setVisible(true);
         emailField.clear();
         messageArea.clear();
+        emailField.setDisable(false);
+        loginButton.setDisable(false);
     }
 
     public void shutdown() {
