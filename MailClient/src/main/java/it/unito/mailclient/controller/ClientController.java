@@ -248,6 +248,10 @@ public class ClientController {
             String body = "\n\n--- Inoltrato ---\n" + selected.getText();
             showComposeDialog(new Email("", null, subject, body), "Inoltra");
         }
+
+        else {
+            showAlert("Attenzione", "Seleziona una mail da inoltrare.");
+        }
     }
 
     private void showEmailDetails(Email email) {
