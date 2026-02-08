@@ -82,8 +82,8 @@ public class ClientHandler implements Runnable {
                                 controller.appendLog("Invio fallito da " + email.getSender() + ": nessun destinatario valido.");
                             } else {
                                 response.setOutcomeCode("PARTIAL_ERROR");
-                                String msg = "Email inviata a " + validRecipients.size() + " destinatari. " +
-                                        "Non consegnata a: " + String.join(", ", invalidRecipients);
+                                String msg = "Email inviata a " + validRecipients.size() + " destinatari.\n" +
+                                        "User inesistenti (non consegnata): " + String.join(", ", invalidRecipients);
                                 response.setOutcomeMessage(msg);
 
                                 controller.appendLog("Invio parziale da " + email.getSender() + ". Validi: " +

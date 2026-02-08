@@ -138,7 +138,8 @@ public class ClientModel {
         if (response != null && "OK".equals(response.getOutcomeCode())) {
 
             if (!malformedRecipients.isEmpty()) {
-                String msg = "Inviata. Indirizzi errati ignorati: " + String.join(", ", malformedRecipients);
+                String msg = "Email inviata a " + validRecipients.size() + " destinatari.\n" +
+                        "Formati errati (ignorata): " + String.join(", ", malformedRecipients);
                 setNotification(msg);
                 return msg;
             } else {
@@ -147,10 +148,11 @@ public class ClientModel {
             }
 
         } else if (response != null) {
-            String msg = "Avviso: " + response.getOutcomeMessage();
+
+            String msg = response.getOutcomeMessage();
 
             if (!malformedRecipients.isEmpty()) {
-                msg += " (Ignorati formati errati: " + String.join(", ", malformedRecipients) + ")";
+                msg += "\nFormati errati (ignorata): " + String.join(", ", malformedRecipients);
             }
 
             setNotification(msg);

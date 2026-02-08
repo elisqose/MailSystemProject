@@ -271,7 +271,7 @@
     "subject": "",
     "text": "",
     "timestamp": "Feb 8, 2026, 6:30:04 PM",
-    "read": false
+    "read": true
   },
   {
     "id": "a8b90f90-92f9-45f2-b770-7dc57d239bf1",
@@ -283,6 +283,45 @@
     "subject": "",
     "text": "",
     "timestamp": "Feb 8, 2026, 6:33:17 PM",
-    "read": false
+    "read": true
+  },
+  {
+    "id": "8973e89c-29d5-485d-bf5d-c38f524aba38",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user6@mail.com",
+      "user7@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 8, 2026, 6:45:18 PM",
+    "read": true
+  },
+  {
+    "id": "ea88af7a-4ab4-442c-af7c-6105dd2f3d9f",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 8, 2026, 9:12:39 PM",
+    "read": true
+  },
+  {
+    "id": "1c401982-4025-4235-8df8-c5890c353a0f",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 8, 2026, 9:13:10 PM",
+    "read": true
   }
 ]

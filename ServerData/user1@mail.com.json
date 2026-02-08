@@ -40,17 +40,6 @@
     "read": true
   },
   {
-    "id": "fcdb81f7-1879-4a6e-9298-b5428e757b3f",
-    "sender": "user2@mail.com",
-    "recipients": [
-      "user1@mail.com"
-    ],
-    "subject": "",
-    "text": "",
-    "timestamp": "Feb 7, 2026, 4:55:48 PM",
-    "read": true
-  },
-  {
     "id": "bf86f4d9-ce29-4027-b21a-863d1b32cb69",
     "sender": "user2@mail.com",
     "recipients": [

@@ -70,10 +70,15 @@ public class ClientController {
                 notificationLabel.setText(newVal);
                 notificationLabel.setCursor(Cursor.HAND);
 
-                if (newVal.startsWith("ERRORE") || newVal.startsWith("Avviso")) {
+                boolean isErrorOrWarning = newVal.startsWith("ERRORE") ||
+                        newVal.startsWith("Avviso") ||
+                        newVal.contains("User inesistenti") ||
+                        newVal.contains("Formati errati");
+
+                if (isErrorOrWarning) {
                     notificationLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
                     unreadNotificationsCount = 0;
-                } else if (newVal.startsWith("Hai ricevuto")) {
+                } else if (newVal.startsWith("Hai ricevuto") || newVal.startsWith("Email inviata con successo")) {
                     notificationLabel.setStyle("-fx-text-fill: #0066cc; -fx-font-weight: bold;");
                 } else {
                     notificationLabel.setStyle("-fx-text-fill: black;");
