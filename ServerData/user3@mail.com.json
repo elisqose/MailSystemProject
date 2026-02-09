@@ -21,5 +21,29 @@
     "text": "\n\n--- Inoltrato ---\nCiao, ho notato un errore strano nei log del server. Ti allego i dettagli appena possibile.",
     "timestamp": "Feb 11, 2026, 11:45:00 AM",
     "read": true
+  },
+  {
+    "id": "c918f76b-8dce-4e4d-ad0b-55c424bce701",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "prova",
+    "text": "test",
+    "timestamp": "Feb 9, 2026, 1:07:17 PM",
+    "read": true
+  },
+  {
+    "id": "f8c03cc8-5896-406f-b0bd-888ef94ab118",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "prova",
+    "text": "test",
+    "timestamp": "Feb 9, 2026, 1:08:50 PM",
+    "read": false
   }
 ]
