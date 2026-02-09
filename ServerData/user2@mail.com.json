@@ -1,84 +1,207 @@
 [
   {
-    "id": "d4e5f6a7-b8c9-4d5e-9f0a-3456789012de",
+    "id": "1e7fe938-0424-4c9f-b42f-1693e279e366",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com"
+    ],
+    "subject": "Test",
+    "text": "Ciaooo",
+    "timestamp": "Dec 2, 2025, 10:19:31 PM",
+    "read": true
+  },
+  {
+    "id": "2e6ed3f9-05d2-4366-8d02-56fec60f730a",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com"
+    ],
+    "subject": "Test Multi Destinatari",
+    "text": "Prova ",
+    "timestamp": "Dec 2, 2025, 10:25:43 PM",
+    "read": true
+  },
+  {
+    "id": "26a08094-46d1-4c5c-80ef-082fd1bbb9db",
     "sender": "user1@mail.com",
     "recipients": [
       "user2@mail.com",
       "user3@mail.com"
     ],
-    "subject": "Riunione di progetto",
-    "text": "Ciao a tutti, vi convoco per la riunione di allineamento domani alle 10:00. Fatemi sapere se ci siete.",
-    "timestamp": "Feb 10, 2026, 9:00:00 AM",
+    "subject": "test",
+    "text": "prova testing ",
+    "timestamp": "Dec 2, 2025, 10:35:04 PM",
     "read": true
   },
   {
-    "id": "b2c3d4e5-f6a7-4b5c-9d8e-1234567890bc",
+    "id": "e9b4f68b-fa5a-4b8c-b7da-149eef976f54",
     "sender": "user3@mail.com",
     "recipients": [
       "user1@mail.com",
       "user2@mail.com"
     ],
-    "subject": "Re: Riunione di progetto",
-    "text": "Buongiorno a tutti! Purtroppo farò qualche minuto di ritardo, iniziate pure senza di me.",
-    "timestamp": "Feb 10, 2026, 9:20:00 AM",
+    "subject": "Re: test",
+    "text": "ciao userssss",
+    "timestamp": "Dec 2, 2025, 10:35:41 PM",
     "read": true
   },
   {
-    "id": "e5f6a7b8-c9d0-4e5f-0a1b-4567890123ef",
+    "id": "3fde2b92-cf77-4251-b342-3377f3ebafb5",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Dec 2, 2025, 10:40:39 PM",
+    "read": true
+  },
+  {
+    "id": "b0d05d23-a025-4766-a2dc-0f00ba3ff509",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova",
+    "timestamp": "Jan 31, 2026, 4:54:41 PM",
+    "read": true
+  },
+  {
+    "id": "c233480a-e381-4b30-9c03-78debff3d5c7",
     "sender": "user3@mail.com",
     "recipients": [
-      "user2@mail.com"
+      "user1@mail.com",
+      "user2@mail.com",
+      "user5@mail.com",
+      "user3@mail.com"
     ],
-    "subject": "Documentazione API",
-    "text": "Ciao User2, ti ricordi dove hai salvato la documentazione delle API? Non riesco a trovarla.",
-    "timestamp": "Feb 12, 2026, 2:45:00 PM",
+    "subject": "mail multipla",
+    "text": "test destinatario invalido ",
+    "timestamp": "Feb 1, 2026, 4:57:43 PM",
     "read": true
   },
   {
-    "id": "c918f76b-8dce-4e4d-ad0b-55c424bce701",
+    "id": "5fba9c74-0856-4e45-954f-e712ae5c6c79",
+    "sender": "user3@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova",
+    "timestamp": "Feb 1, 2026, 5:15:37 PM",
+    "read": true
+  },
+  {
+    "id": "fd023b71-5e8c-4a4f-9c40-dbcf3918e14b",
     "sender": "user1@mail.com",
     "recipients": [
       "user2@mail.com",
-      "user3@mail.com"
+      "user3@mail.com",
+      "user5@mail.com"
     ],
-    "subject": "prova",
-    "text": "test",
-    "timestamp": "Feb 9, 2026, 1:07:17 PM",
+    "subject": "test",
+    "text": "prova",
+    "timestamp": "Feb 1, 2026, 5:27:45 PM",
     "read": true
   },
   {
-    "id": "f8c03cc8-5896-406f-b0bd-888ef94ab118",
+    "id": "ec9be9b8-a1a3-49b4-a854-0104dee6e0e5",
     "sender": "user1@mail.com",
     "recipients": [
       "user2@mail.com",
-      "user3@mail.com"
+      "user3@mail.com",
+      "user5@mail.com"
     ],
-    "subject": "prova",
-    "text": "test",
-    "timestamp": "Feb 9, 2026, 1:08:50 PM",
+    "subject": "",
+    "text": "testing",
+    "timestamp": "Feb 1, 2026, 5:31:56 PM",
     "read": true
   },
   {
-    "id": "e20a5335-40d3-47dd-b562-ca11c26dd384",
+    "id": "1c4aaf28-532c-4e4a-ba84-646e19eb5089",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "",
+    "text": "yas",
+    "timestamp": "Feb 1, 2026, 5:36:34 PM",
+    "read": true
+  },
+  {
+    "id": "7bac3017-9de5-4cb3-9c11-48bab2170903",
     "sender": "user1@mail.com",
     "recipients": [
       "user2@mail.com"
     ],
     "subject": "",
     "text": "",
-    "timestamp": "Feb 9, 2026, 1:09:45 PM",
+    "timestamp": "Feb 6, 2026, 11:15:29 PM",
     "read": true
   },
   {
-    "id": "9ddc3bea-220a-487b-bc8f-2dd364abc553",
+    "id": "d56c4af6-2d19-4fbd-95ee-50d86231d2ae",
     "sender": "user1@mail.com",
     "recipients": [
-      "user2@mail.com",
-      "user7@mail.com"
+      "user2@mail.com"
     ],
     "subject": "",
     "text": "",
-    "timestamp": "Feb 9, 2026, 1:14:12 PM",
-    "read": false
+    "timestamp": "Feb 6, 2026, 11:16:05 PM",
+    "read": true
+  },
+  {
+    "id": "9857d813-838b-4967-9a31-34e2dfbe313b",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 9, 2026, 1:28:30 PM",
+    "read": true
+  },
+  {
+    "id": "3944fbe6-5fd7-48e3-a240-78cfdb7d4cae",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com",
+      "user6@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 9, 2026, 1:29:18 PM",
+    "read": true
+  },
+  {
+    "id": "402f253b-14ca-4c99-a354-945da9165d20",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 9, 2026, 2:51:12 PM",
+    "read": true
+  },
+  {
+    "id": "06a178e2-dd69-42e9-a0b2-198d8a1591ed",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user2@mail.com",
+      "user3@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova",
+    "timestamp": "Feb 9, 2026, 3:00:46 PM",
+    "read": true
   }
 ]

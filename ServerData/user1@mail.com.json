@@ -1,36 +1,64 @@
 [
   {
-    "id": "a1b2c3d4-e5f6-4a5b-8c9d-0123456789ab",
-    "sender": "user2@mail.com",
-    "recipients": [
-      "user1@mail.com"
-    ],
-    "subject": "Re: Riunione di progetto",
-    "text": "Ciao User1, per me l\u0027orario va benissimo. Ci vediamo lì.",
-    "timestamp": "Feb 10, 2026, 9:15:00 AM",
-    "read": true
-  },
-  {
-    "id": "b2c3d4e5-f6a7-4b5c-9d8e-1234567890bc",
+    "id": "c233480a-e381-4b30-9c03-78debff3d5c7",
     "sender": "user3@mail.com",
     "recipients": [
       "user1@mail.com",
-      "user2@mail.com"
+      "user2@mail.com",
+      "user5@mail.com",
+      "user3@mail.com"
     ],
-    "subject": "Re: Riunione di progetto",
-    "text": "Buongiorno a tutti! Purtroppo farò qualche minuto di ritardo, iniziate pure senza di me.",
-    "timestamp": "Feb 10, 2026, 9:20:00 AM",
+    "subject": "mail multipla",
+    "text": "test destinatario invalido ",
+    "timestamp": "Feb 1, 2026, 4:57:43 PM",
     "read": true
   },
   {
-    "id": "c3d4e5f6-a7b8-4c5d-8e9f-2345678901cd",
+    "id": "5fba9c74-0856-4e45-954f-e712ae5c6c79",
+    "sender": "user3@mail.com",
+    "recipients": [
+      "user1@mail.com",
+      "user2@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "test",
+    "text": "prova",
+    "timestamp": "Feb 1, 2026, 5:15:37 PM",
+    "read": true
+  },
+  {
+    "id": "0ccb64aa-5a03-4af4-b080-e078d4bdc339",
+    "sender": "user2@mail.com",
+    "recipients": [
+      "user3@mail.com",
+      "user1@mail.com",
+      "user5@mail.com"
+    ],
+    "subject": "Re: mail multipla",
+    "text": "ciaoo",
+    "timestamp": "Feb 1, 2026, 5:37:48 PM",
+    "read": true
+  },
+  {
+    "id": "25d82a3d-534b-4f57-8d10-e33fc5f112c8",
+    "sender": "user1@mail.com",
+    "recipients": [
+      "user1@mail.com"
+    ],
+    "subject": "",
+    "text": "",
+    "timestamp": "Feb 9, 2026, 1:28:17 PM",
+    "read": true
+  },
+  {
+    "id": "a25b9c40-4dbc-4b0e-bb79-d1a59fc9d777",
     "sender": "user2@mail.com",
     "recipients": [
       "user1@mail.com"
     ],
-    "subject": "Problema urgente server",
-    "text": "Ciao, ho notato un errore strano nei log del server. Ti allego i dettagli appena possibile.",
-    "timestamp": "Feb 11, 2026, 11:30:00 AM",
-    "read": true
+    "subject": "Fwd: test",
+    "text": "\n\n--- Inoltrato ---\nprova",
+    "timestamp": "Feb 9, 2026, 3:02:41 PM",
+    "read": false
   }
 ]
